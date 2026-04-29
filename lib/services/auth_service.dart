@@ -28,15 +28,59 @@ class AuthService {
       );
 
       if (response.statusCode == 200) {
+        // 1. Get the token string
         String token = response.body;
+
+        // 2. Decode the token to get the user claims (like the role)
+        int roleId = _extractRoleIdFromToken(token);
+
+        // 3. Save BOTH to SharedPreferences
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('jwt_token', token);
+        await prefs.setInt('role_id', roleId); // The HomeScreen needs this!
+
         return true;
       }
       return false;
     } catch (e) {
       print("Login connection error: $e");
       return false;
+    }
+  }
+
+  // --- HELPER METHOD TO DECODE JWT ---
+  int _extractRoleIdFromToken(String token) {
+    try {
+      // JWTs have 3 parts separated by dots. The payload is the middle part.
+      final parts = token.split('.');
+      if (parts.length != 3) {
+        return 2; // Default to HocVien (Student) if token is weird
+      }
+
+      final payload = parts[1];
+
+      // Base64Url decoding requires padding handling
+      String normalized = base64Url.normalize(payload);
+      String resp = utf8.decode(base64Url.decode(normalized));
+
+      final payloadMap = jsonDecode(resp);
+
+      // Extract the role.
+      // Note: .NET often uses long URI strings for roles. You might need to adjust this key.
+      // Common .NET keys are 'role', 'roles', or 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+      var roleClaim = payloadMap['role'] ??
+          payloadMap['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ??
+          payloadMap['IdVaiTro']; // Add your specific key if you know it
+
+      if (roleClaim != null) {
+        // Convert it to an int (in case it comes through as a String like "3")
+        return int.tryParse(roleClaim.toString()) ?? 2;
+      }
+
+      return 2; // Default to Student
+    } catch (e) {
+      print("Error decoding token: $e");
+      return 2; // Default to Student on error
     }
   }
 
