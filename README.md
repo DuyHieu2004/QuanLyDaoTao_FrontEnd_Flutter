@@ -1,17 +1,18 @@
-# khoa_luan_cu_nhan
+### Connect to physical device by ADB Reverse
 
-A new Flutter project.
+1. Connect your physical device to your computer via USB.  
+2. Open a terminal and run the following command to set up ADB reverse:
+3. Make sure your .NET backend is running (listening on http://localhost:5025).
+4. Open the Terminal in Android Studio (at the bottom).
+5. Type this command and press Enter:
 
-## Getting Started
+```bash
+adb reverse tcp:5025 tcp:5025
+```
+6. Now run your Flutter app.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+_Special thanks to [@NguyenHuuThinh](https://github.com/NguyenHuuThinh2410) for the assistance with the refactor._
+From: 
+``` bash
+NguyenHuuThinh2410 <nguyenhuuthinh2410@gmail.com>
+```
