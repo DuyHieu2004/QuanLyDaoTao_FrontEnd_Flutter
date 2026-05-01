@@ -16,3 +16,24 @@ From:
 ``` bash
 NguyenHuuThinh2410 <nguyenhuuthinh2410@gmail.com>
 ```
+
+### Run this project.
+
+1. Clone this reponsitory to your local.
+
+``` bash
+git clone https://github.com/DuyHieu2004/QuanLyDaoTao_FrontEnd_Flutter.git
+```
+
+2. Download packages at this project.
+
+``` bash
+flutter pub get
+```
+
+3. Run source code of the project.
+
+``` bash
+flutter run
+```
+
