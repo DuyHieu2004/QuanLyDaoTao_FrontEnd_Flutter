@@ -4,9 +4,34 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../api_constants.dart';
 
 class RegistrationService {
+  int _extractUserIdFromToken(String token) {
+    try {
+      final parts = token.split('.');
+      if (parts.length != 3) return 0;
+      final payload = parts[1];
+      String normalized = base64Url.normalize(payload);
+      String resp = utf8.decode(base64Url.decode(normalized));
+      final payloadMap = jsonDecode(resp);
+
+      var idClaim = payloadMap['nameid'] ??
+          payloadMap['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] ??
+          payloadMap['IdHocVien'] ??
+          payloadMap['IdNguoiDung'] ??
+          payloadMap['id'];
+
+      if (idClaim != null) {
+        return int.tryParse(idClaim.toString()) ?? 0;
+      }
+      return 0;
+    } catch (e) {
+      return 0;
+    }
+  }
+
   Future<bool> registerForClass(int idLop) async {
     final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('jwt_token');
+    final token = prefs.getString('jwt_token') ?? '';
+    final int idHocVien = _extractUserIdFromToken(token);
 
     try {
       final response = await http.post(
@@ -17,7 +42,8 @@ class RegistrationService {
           'Accept': '*/*',
         },
         body: jsonEncode({
-          "idLop": idLop
+          "idLop": idLop,
+          "idHocVien": idHocVien,
         }),
       );
 

@@ -26,7 +26,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
     'Chuyển khoản (Bank Transfer)',
     'Tiền mặt (Cash)',
     'Ví MoMo',
-    'VNPay'
+    'VNPay',
   ];
 
   @override
@@ -45,21 +45,27 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
     setState(() => _isProcessing = true);
 
     bool success = await _paymentService.confirmPayment(
-        widget.idDangKy,
-        _selectedMethod,
-        _noteController.text.trim()
+      widget.idDangKy,
+      _selectedMethod,
+      _noteController.text.trim(),
     );
 
     setState(() => _isProcessing = false);
 
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Payment confirmed successfully!'), backgroundColor: Colors.green)
+        const SnackBar(
+          content: Text('Xác nhận thanh toán thành công!'),
+          backgroundColor: Colors.green,
+        ),
       );
       _loadPaymentInfo(); // Reload to show the 'Paid' UI
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Payment failed. Please try again.'), backgroundColor: Colors.red)
+        const SnackBar(
+          content: Text('Thanh toán thất bại. Vui lòng thử lại.'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -71,7 +77,10 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text("Payment Details", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text(
+          "Chi tiết thanh toán",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: const Color(0xFF1E3C72),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -82,11 +91,15 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData || snapshot.data == null) {
-            return const Center(child: Text("No payment invoice found for this registration."));
+            return const Center(
+              child: Text("Không tìm thấy hóa đơn thanh toán cho đăng ký này."),
+            );
           }
 
           final payment = snapshot.data!;
-          final isPaid = payment.trangThaiThanhToan?.toLowerCase() == 'đã thanh toán' || payment.trangThaiThanhToan?.toLowerCase() == 'paid';
+          final isPaid =
+              payment.trangThaiThanhToan?.toLowerCase() == 'đã thanh toán' ||
+              payment.trangThaiThanhToan?.toLowerCase() == 'paid';
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(20),
@@ -98,7 +111,13 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
-                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 5))],
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,38 +125,78 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text("INVOICE", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey)),
+                          const Text(
+                            "HÓA ĐƠN",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
+                          ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
                             decoration: BoxDecoration(
-                              color: isPaid ? Colors.green.shade50 : Colors.orange.shade50,
+                              color: isPaid
+                                  ? Colors.green.shade50
+                                  : Colors.orange.shade50,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
-                              isPaid ? "PAID" : "PENDING",
-                              style: TextStyle(color: isPaid ? Colors.green : Colors.orange, fontWeight: FontWeight.bold),
+                              isPaid ? "ĐÃ THANH TOÁN" : "CHƯA THANH TOÁN",
+                              style: TextStyle(
+                                color: isPaid ? Colors.green : Colors.orange,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          )
+                          ),
                         ],
                       ),
                       const Divider(height: 30),
-                      _buildInvoiceRow("Registration ID", "#${payment.idDangKy}"),
+                      _buildInvoiceRow("Mã đăng ký", "#${payment.idDangKy}"),
                       const SizedBox(height: 10),
-                      _buildInvoiceRow("Date Created", payment.ngayTao != null ? DateFormat('dd/MM/yyyy HH:mm').format(payment.ngayTao!) : "N/A"),
+                      _buildInvoiceRow(
+                        "Ngày tạo",
+                        payment.ngayTao != null
+                            ? DateFormat(
+                                'dd/MM/yyyy HH:mm',
+                              ).format(payment.ngayTao!)
+                            : "N/A",
+                      ),
                       const SizedBox(height: 10),
                       if (isPaid && payment.ngayThanhToan != null) ...[
-                        _buildInvoiceRow("Paid On", DateFormat('dd/MM/yyyy HH:mm').format(payment.ngayThanhToan!)),
+                        _buildInvoiceRow(
+                          "Ngày thanh toán",
+                          DateFormat(
+                            'dd/MM/yyyy HH:mm',
+                          ).format(payment.ngayThanhToan!),
+                        ),
                         const SizedBox(height: 10),
-                        _buildInvoiceRow("Method", payment.hinhThucThanhToan ?? "N/A"),
+                        _buildInvoiceRow(
+                          "Hình thức",
+                          payment.hinhThucThanhToan ?? "N/A",
+                        ),
                       ],
                       const Divider(height: 30),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text("Total Amount", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          const Text(
+                            "Tổng số tiền",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           Text(
-                              formatCurrency.format(payment.soTien),
-                              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF1E3C72))
+                            formatCurrency.format(payment.soTien),
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF1E3C72),
+                            ),
                           ),
                         ],
                       ),
@@ -151,7 +210,13 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                 if (!isPaid) ...[
                   const Align(
                     alignment: Alignment.centerLeft,
-                    child: Text("Select Payment Method", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    child: Text(
+                      "Chọn hình thức thanh toán",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Container(
@@ -166,10 +231,14 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                         value: _selectedMethod,
                         isExpanded: true,
                         items: _paymentMethods.map((String method) {
-                          return DropdownMenuItem<String>(value: method, child: Text(method));
+                          return DropdownMenuItem<String>(
+                            value: method,
+                            child: Text(method),
+                          );
                         }).toList(),
                         onChanged: (String? newValue) {
-                          if (newValue != null) setState(() => _selectedMethod = newValue);
+                          if (newValue != null)
+                            setState(() => _selectedMethod = newValue);
                         },
                       ),
                     ),
@@ -178,10 +247,13 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                   TextField(
                     controller: _noteController,
                     decoration: InputDecoration(
-                      labelText: "Notes (Optional)",
+                      labelText: "Ghi chú (không bắt buộc)",
                       filled: true,
                       fillColor: Colors.white,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -192,13 +264,22 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                       onPressed: _isProcessing ? null : _handleCheckout,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF1E3C72),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                       child: _isProcessing
                           ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text("CONFIRM & PAY", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                          : const Text(
+                              "XÁC NHẬN & THANH TOÁN",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
                     ),
-                  )
+                  ),
                 ] else ...[
                   // If Paid, maybe show a button to request refund based on your endpoints
                   SizedBox(
@@ -209,14 +290,19 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                         // TODO: Call _paymentService.requestRefund(widget.idDangKy) with confirmation
                       },
                       icon: const Icon(Icons.refresh, color: Colors.red),
-                      label: const Text("Request Refund", style: TextStyle(color: Colors.red)),
+                      label: const Text(
+                        "Yêu cầu hoàn tiền",
+                        style: TextStyle(color: Colors.red),
+                      ),
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Colors.red),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                     ),
-                  )
-                ]
+                  ),
+                ],
               ],
             ),
           );
@@ -229,8 +315,14 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: TextStyle(color: Colors.grey.shade600, fontSize: 15)),
-        Text(value, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+        Text(
+          label,
+          style: TextStyle(color: Colors.grey.shade600, fontSize: 15),
+        ),
+        Text(
+          value,
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+        ),
       ],
     );
   }

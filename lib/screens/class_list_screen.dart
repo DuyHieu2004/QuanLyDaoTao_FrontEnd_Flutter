@@ -36,7 +36,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: const Text(
-          "Available Classes",
+          "Lớp học hiện có",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         centerTitle: true,
@@ -126,15 +126,24 @@ class _ClassListScreenState extends State<ClassListScreen> {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                _buildDetailRow(Icons.calendar_month_outlined, "Schedule",
-                    "${dateFormat.format(lop.ngayBatDau)} - ${dateFormat.format(lop.ngayKetThuc)}"),
+                _buildDetailRow(
+                  Icons.calendar_month_outlined,
+                  "Lịch học",
+                  "${dateFormat.format(lop.ngayBatDau)} - ${dateFormat.format(lop.ngayKetThuc)}",
+                ),
                 const SizedBox(height: 12),
-                _buildDetailRow(Icons.people_outline, "Enrollment",
-                    "${lop.soHocVienDangKy} / ${lop.siSoToiDa} Students"),
+                _buildDetailRow(
+                  Icons.people_outline,
+                  "Số lượng đăng ký",
+                  "${lop.soHocVienDangKy} / ${lop.siSoToiDa} học viên",
+                ),
                 const SizedBox(height: 12),
-                _buildDetailRow(Icons.event_seat_outlined, "Available",
-                    "${lop.soChoConLai} seats left",
-                    valueColor: lop.soChoConLai < 5 ? Colors.red : Colors.blue),
+                _buildDetailRow(
+                  Icons.event_seat_outlined,
+                  "Còn trống",
+                  "Còn ${lop.soChoConLai} chỗ",
+                  valueColor: lop.soChoConLai < 5 ? Colors.red : Colors.blue,
+                ),
               ],
             ),
           ),
@@ -151,7 +160,8 @@ class _ClassListScreenState extends State<ClassListScreen> {
                   final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ClassDetailsScreen(idLop: lop.idLop),
+                      builder: (context) =>
+                          ClassDetailsScreen(idLop: lop.idLop),
                     ),
                   );
 
@@ -167,7 +177,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
                   ),
                 ),
                 child: const Text(
-                  "VIEW DETAILS",
+                  "XEM CHI TIẾT",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -185,11 +195,13 @@ class _ClassListScreenState extends State<ClassListScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: isOpen ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1),
+        color: isOpen
+            ? Colors.green.withOpacity(0.1)
+            : Colors.red.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
-        isOpen ? "OPEN" : "CLOSED",
+        isOpen ? "MỞ" : "ĐÓNG",
         style: TextStyle(
           color: isOpen ? Colors.green[700] : Colors.red[700],
           fontSize: 11,
@@ -199,7 +211,12 @@ class _ClassListScreenState extends State<ClassListScreen> {
     );
   }
 
-  Widget _buildDetailRow(IconData icon, String label, String value, {Color? valueColor}) {
+  Widget _buildDetailRow(
+    IconData icon,
+    String label,
+    String value, {
+    Color? valueColor,
+  }) {
     return Row(
       children: [
         Icon(icon, size: 20, color: Colors.grey[600]),
@@ -223,7 +240,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
         children: [
           Icon(Icons.folder_open, size: 80, color: Colors.grey[300]),
           const SizedBox(height: 16),
-          const Text("No classes available at the moment."),
+          const Text("Hiện tại không có lớp học nào."),
         ],
       ),
     );
@@ -238,10 +255,17 @@ class _ClassListScreenState extends State<ClassListScreen> {
           children: [
             const Icon(Icons.error_outline, size: 60, color: Colors.redAccent),
             const SizedBox(height: 16),
-            const Text("Oops! Something went wrong."),
-            Text(error, style: const TextStyle(color: Colors.grey, fontSize: 12), textAlign: TextAlign.center),
+            const Text("Rất tiếc! Đã có lỗi xảy ra."),
+            Text(
+              error,
+              style: const TextStyle(color: Colors.grey, fontSize: 12),
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 20),
-            ElevatedButton(onPressed: _loadClasses, child: const Text("Retry")),
+            ElevatedButton(
+              onPressed: _loadClasses,
+              child: const Text("Thử lại"),
+            ),
           ],
         ),
       ),

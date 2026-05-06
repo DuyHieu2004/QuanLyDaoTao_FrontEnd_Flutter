@@ -7,7 +7,8 @@ import '../services/course_service.dart';
 
 class CourseDetailsScreen extends StatefulWidget {
   final int idKhoaHoc;
-  final String courseName; // Pass the name so we can show it in the AppBar immediately
+  final String
+  courseName; // Pass the name so we can show it in the AppBar immediately
 
   const CourseDetailsScreen({
     super.key,
@@ -34,7 +35,10 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: Text(widget.courseName, style: const TextStyle(color: Colors.white, fontSize: 16)),
+        title: Text(
+          widget.courseName,
+          style: const TextStyle(color: Colors.white, fontSize: 16),
+        ),
         backgroundColor: const Color(0xFF1E3C72),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -45,11 +49,16 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
-            return const Center(child: Text("Failed to load course details."));
+            return const Center(
+              child: Text("Không tải được thông tin khóa học."),
+            );
           }
 
           final course = snapshot.data!;
-          final formatCurrency = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
+          final formatCurrency = NumberFormat.currency(
+            locale: 'vi_VN',
+            symbol: '₫',
+          );
 
           return SingleChildScrollView(
             child: Column(
@@ -63,25 +72,58 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(course.tenKhoaHoc, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF1E3C72))),
+                      Text(
+                        course.tenKhoaHoc,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1E3C72),
+                        ),
+                      ),
                       const SizedBox(height: 10),
                       Row(
                         children: [
-                          const Icon(Icons.timer_outlined, size: 18, color: Colors.grey),
+                          const Icon(
+                            Icons.timer_outlined,
+                            size: 18,
+                            color: Colors.grey,
+                          ),
                           const SizedBox(width: 5),
-                          Text("${course.thoiLuong} hours"),
+                          Text("${course.thoiLuong} giờ"),
                           const SizedBox(width: 20),
-                          const Icon(Icons.payments_outlined, size: 18, color: Colors.grey),
+                          const Icon(
+                            Icons.payments_outlined,
+                            size: 18,
+                            color: Colors.grey,
+                          ),
                           const SizedBox(width: 5),
-                          Text(formatCurrency.format(course.hocPhi), style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+                          Text(
+                            formatCurrency.format(course.hocPhi),
+                            style: const TextStyle(
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ],
                       ),
                       const Divider(height: 30),
                       if (course.moTa != null) ...[
-                        const Text("Description", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        const Text(
+                          "Mô tả",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
                         const SizedBox(height: 8),
-                        Text(course.moTa!, style: const TextStyle(color: Colors.black87, height: 1.5)),
-                      ]
+                        Text(
+                          course.moTa!,
+                          style: const TextStyle(
+                            color: Colors.black87,
+                            height: 1.5,
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -94,14 +136,23 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text("Available Classes", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      const Text(
+                        "Lớp học hiện có",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       const SizedBox(height: 15),
 
                       if (course.lopHocs == null || course.lopHocs!.isEmpty)
                         const Center(
                           child: Padding(
                             padding: EdgeInsets.all(20.0),
-                            child: Text("No classes are currently scheduled for this course.", style: TextStyle(color: Colors.grey)),
+                            child: Text(
+                              "Hiện chưa có lớp học nào cho khóa học này.",
+                              style: TextStyle(color: Colors.grey),
+                            ),
                           ),
                         )
                       else
@@ -115,29 +166,49 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
 
                             return Card(
                               margin: const EdgeInsets.only(bottom: 12),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                               child: ListTile(
                                 contentPadding: const EdgeInsets.all(15),
-                                title: Text(lop.tenLop, style: const TextStyle(fontWeight: FontWeight.bold)),
+                                title: Text(
+                                  lop.tenLop,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const SizedBox(height: 5),
-                                    Text("Schedule: ${dateFormat.format(lop.ngayBatDau)} - ${dateFormat.format(lop.ngayKetThuc)}"),
+                                    Text(
+                                      "Lịch học: ${dateFormat.format(lop.ngayBatDau)} - ${dateFormat.format(lop.ngayKetThuc)}",
+                                    ),
                                     const SizedBox(height: 5),
-                                    Text("Seats Left: ${lop.soChoConLai} / ${lop.siSoToiDa}",
-                                        style: TextStyle(color: lop.soChoConLai > 0 ? Colors.blue : Colors.red)),
+                                    Text(
+                                      "Còn chỗ: ${lop.soChoConLai} / ${lop.siSoToiDa}",
+                                      style: TextStyle(
+                                        color: lop.soChoConLai > 0
+                                            ? Colors.blue
+                                            : Colors.red,
+                                      ),
+                                    ),
                                   ],
                                 ),
                                 trailing: ElevatedButton(
-                                  onPressed: lop.allowDangKy ? () {
-                                    // TODO: Navigate to Registration confirmation
-                                  } : null,
+                                  onPressed: lop.allowDangKy
+                                      ? () {
+                                          // TODO: Navigate to Registration confirmation
+                                        }
+                                      : null,
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF1E3C72),
                                     disabledBackgroundColor: Colors.grey[300],
                                   ),
-                                  child: const Text("Register", style: TextStyle(color: Colors.white)),
+                                  child: const Text(
+                                    "Đăng ký",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 ),
                               ),
                             );

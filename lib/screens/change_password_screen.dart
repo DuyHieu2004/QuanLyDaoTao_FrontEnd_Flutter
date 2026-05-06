@@ -11,9 +11,11 @@ class ChangePasswordScreen extends StatefulWidget {
 }
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
-  final TextEditingController _currentPasswordController = TextEditingController();
+  final TextEditingController _currentPasswordController =
+      TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   final AuthService _authService = AuthService();
 
@@ -30,9 +32,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     final confirmPassword = _confirmPasswordController.text.trim();
 
     // 1. Basic Validation
-    if (currentPassword.isEmpty || newPassword.isEmpty || confirmPassword.isEmpty) {
+    if (currentPassword.isEmpty ||
+        newPassword.isEmpty ||
+        confirmPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all fields!')),
+        const SnackBar(
+          content: Text('Vui lòng điền đầy đủ tất cả các trường!'),
+        ),
       );
       return;
     }
@@ -41,7 +47,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     if (newPassword != confirmPassword) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('New password and confirmation do not match!'),
+          content: Text('Mật khẩu mới và xác nhận không khớp!'),
           backgroundColor: Colors.red,
         ),
       );
@@ -67,8 +73,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Password changed successfully!'),
-            backgroundColor: Colors.green
+          content: Text('Đổi mật khẩu thành công!'),
+          backgroundColor: Colors.green,
         ),
       );
       // Go back to the previous screen (e.g., Profile or Settings)
@@ -76,8 +82,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Failed to change password. Please check your current password.'),
-            backgroundColor: Colors.red
+          content: Text(
+            'Đổi mật khẩu thất bại. Vui lòng kiểm tra mật khẩu hiện tại.',
+          ),
+          backgroundColor: Colors.red,
         ),
       );
     }
@@ -94,7 +102,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          'Change Password',
+          'Đổi mật khẩu',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -106,15 +114,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF1E3C72),
-              Color(0xFF2A5298),
-            ],
+            colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
           ),
         ),
         child: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 30.0,
+              vertical: 20.0,
+            ),
             child: Column(
               children: [
                 const Icon(
@@ -124,7 +132,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  'Secure Your Account',
+                  'Bảo mật tài khoản của bạn',
                   style: TextStyle(color: Colors.white70, fontSize: 16),
                 ),
                 const SizedBox(height: 30),
@@ -148,7 +156,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       // Current Password
                       _buildPasswordField(
                         controller: _currentPasswordController,
-                        label: 'Current Password',
+                        label: 'Mật khẩu hiện tại',
                         obscureText: _obscureCurrent,
                         onToggleVisibility: () {
                           setState(() {
@@ -163,7 +171,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       // New Password
                       _buildPasswordField(
                         controller: _newPasswordController,
-                        label: 'New Password',
+                        label: 'Mật khẩu mới',
                         obscureText: _obscureNew,
                         onToggleVisibility: () {
                           setState(() {
@@ -176,7 +184,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       // Confirm New Password
                       _buildPasswordField(
                         controller: _confirmPasswordController,
-                        label: 'Confirm New Password',
+                        label: 'Xác nhận mật khẩu mới',
                         obscureText: _obscureConfirm,
                         onToggleVisibility: () {
                           setState(() {
@@ -200,15 +208,17 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             elevation: 5,
                           ),
                           child: _isLoading
-                              ? const CircularProgressIndicator(color: Colors.white)
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
                               : const Text(
-                            'UPDATE PASSWORD',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
+                                  'CẬP NHẬT MẬT KHẨU',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
                         ),
                       ),
                     ],
@@ -242,9 +252,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           ),
           onPressed: onToggleVisibility,
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Colors.grey.shade300),

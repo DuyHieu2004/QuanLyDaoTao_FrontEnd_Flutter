@@ -26,7 +26,9 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
 
   void _loadCertificates() {
     setState(() {
-      _certificatesFuture = _certificateService.getMyCertificates(widget.studentId);
+      _certificatesFuture = _certificateService.getMyCertificates(
+        widget.studentId,
+      );
     });
   }
 
@@ -35,7 +37,10 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text("My Certificates", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text(
+          "Chứng chỉ của tôi",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: const Color(0xFF1E3C72),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -85,7 +90,11 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
           Positioned(
             right: -20,
             bottom: -20,
-            child: Icon(Icons.workspace_premium, size: 150, color: Colors.amber.withOpacity(0.1)),
+            child: Icon(
+              Icons.workspace_premium,
+              size: 150,
+              color: Colors.amber.withOpacity(0.1),
+            ),
           ),
 
           Padding(
@@ -93,10 +102,14 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Icon(Icons.workspace_premium, size: 50, color: Colors.amber),
+                const Icon(
+                  Icons.workspace_premium,
+                  size: 50,
+                  color: Colors.amber,
+                ),
                 const SizedBox(height: 15),
                 const Text(
-                  "CERTIFICATE OF COMPLETION",
+                  "CHỨNG CHỈ HOÀN THÀNH",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -106,19 +119,39 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-                const Text("This is to certify that", style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic)),
+                const Text(
+                  "Chứng nhận rằng",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
                 const SizedBox(height: 10),
                 Text(
                   cert.hoTenHocVien ?? "Student",
-                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, fontFamily: 'serif'),
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'serif',
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 10),
-                const Text("has successfully completed the course", style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic)),
+                const Text(
+                  "đã hoàn thành khóa học",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
                 const SizedBox(height: 10),
                 Text(
-                  cert.tenKhoaHoc ?? "Unknown Course",
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Color(0xFF1E3C72)),
+                  cert.tenKhoaHoc ?? "Khóa học không xác định",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF1E3C72),
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const Padding(
@@ -131,10 +164,15 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("Date Issued", style: TextStyle(fontSize: 12, color: Colors.grey)),
+                        const Text(
+                          "Ngày cấp",
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
                         const SizedBox(height: 4),
                         Text(
-                          cert.ngayCap != null ? dateFormat.format(cert.ngayCap!) : "N/A",
+                          cert.ngayCap != null
+                              ? dateFormat.format(cert.ngayCap!)
+                              : "N/A",
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],
@@ -142,11 +180,17 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        const Text("Credential ID", style: TextStyle(fontSize: 12, color: Colors.grey)),
+                        const Text(
+                          "Mã chứng chỉ",
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
                         const SizedBox(height: 4),
                         Text(
                           "#${cert.idChungChi.toString().padLeft(6, '0')}",
-                          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueGrey,
+                          ),
                         ),
                       ],
                     ),
@@ -165,15 +209,23 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.military_tech_outlined, size: 100, color: Colors.grey.shade300),
+          Icon(
+            Icons.military_tech_outlined,
+            size: 100,
+            color: Colors.grey.shade300,
+          ),
           const SizedBox(height: 20),
           Text(
-            "No Certificates Yet",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey.shade600),
+            "Chưa có chứng chỉ",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade600,
+            ),
           ),
           const SizedBox(height: 10),
           const Text(
-            "Complete a course to earn your first certificate!",
+            "Hoàn thành một khóa học để nhận chứng chỉ đầu tiên!",
             style: TextStyle(color: Colors.grey),
           ),
         ],

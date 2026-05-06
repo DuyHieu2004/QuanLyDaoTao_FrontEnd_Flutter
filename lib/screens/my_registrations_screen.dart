@@ -36,7 +36,10 @@ class _MyRegistrationsScreenState extends State<MyRegistrationsScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text("My Registrations", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text(
+          "Đăng ký của tôi",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: const Color(0xFF1E3C72),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -48,7 +51,7 @@ class _MyRegistrationsScreenState extends State<MyRegistrationsScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text("You haven't registered for any classes yet."));
+              return const Center(child: Text("Bạn chưa đăng ký lớp học nào."));
             }
 
             final registrations = snapshot.data!;
@@ -61,16 +64,24 @@ class _MyRegistrationsScreenState extends State<MyRegistrationsScreen> {
 
                 // Safely extract nested data based on your Swagger image
                 final idDangKy = reg['idDangKy'] ?? 0;
-                final className = reg['lopHocInfo']?['tenLop'] ?? 'Unknown Class';
-                final courseName = reg['khoaHocInfo']?['tenKhoaHoc'] ?? 'Unknown Course';
+                final className =
+                    reg['lopHocInfo']?['tenLop'] ?? 'Không rõ lớp học';
+                final courseName =
+                    reg['khoaHocInfo']?['tenKhoaHoc'] ?? 'Không rõ khóa học';
                 final fee = (reg['khoaHocInfo']?['hocPhi'] ?? 0).toDouble();
-                final status = reg['trangThaiThanhToan'] ?? 'Pending';
-                final isPaid = status.toString().toLowerCase() == 'đã thanh toán' || status.toString().toLowerCase() == 'paid';
-                final regDate = reg['ngayDangKy'] != null ? DateTime.parse(reg['ngayDangKy']) : null;
+                final status = reg['trangThaiThanhToan'] ?? 'Chưa thanh toán';
+                final isPaid =
+                    status.toString().toLowerCase() == 'đã thanh toán' ||
+                    status.toString().toLowerCase() == 'paid';
+                final regDate = reg['ngayDangKy'] != null
+                    ? DateTime.parse(reg['ngayDangKy'])
+                    : null;
 
                 return Card(
                   margin: const EdgeInsets.only(bottom: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                   elevation: 2,
                   child: Padding(
                     padding: const EdgeInsets.all(16),
@@ -80,35 +91,76 @@ class _MyRegistrationsScreenState extends State<MyRegistrationsScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("ID: #$idDangKy", style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
+                            Text(
+                              "ID: #$idDangKy",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey,
+                              ),
+                            ),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
-                                color: isPaid ? Colors.green.shade50 : Colors.orange.shade50,
+                                color: isPaid
+                                    ? Colors.green.shade50
+                                    : Colors.orange.shade50,
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
-                                isPaid ? "PAID" : "PENDING",
-                                style: TextStyle(color: isPaid ? Colors.green : Colors.orange, fontWeight: FontWeight.bold, fontSize: 12),
+                                isPaid ? "ĐÃ THANH TOÁN" : "CHƯA THANH TOÁN",
+                                style: TextStyle(
+                                  color: isPaid ? Colors.green : Colors.orange,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                         const Divider(height: 20),
-                        Text(className, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1E3C72))),
+                        Text(
+                          className,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF1E3C72),
+                          ),
+                        ),
                         const SizedBox(height: 5),
-                        Text(courseName, style: TextStyle(color: Colors.grey.shade700)),
+                        Text(
+                          courseName,
+                          style: TextStyle(color: Colors.grey.shade700),
+                        ),
                         const SizedBox(height: 15),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Tuition Fee:", style: TextStyle(color: Colors.grey.shade600)),
-                            Text(formatCurrency.format(fee), style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: 16)),
+                            Text(
+                              "Học phí:",
+                              style: TextStyle(color: Colors.grey.shade600),
+                            ),
+                            Text(
+                              formatCurrency.format(fee),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
+                                fontSize: 16,
+                              ),
+                            ),
                           ],
                         ),
                         if (regDate != null) ...[
                           const SizedBox(height: 5),
-                          Text("Registered: ${dateFormat.format(regDate)}", style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                          Text(
+                            "Đăng ký: ${dateFormat.format(regDate)}",
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
                         ],
 
                         // IF NOT PAID, SHOW PAYMENT BUTTON
@@ -120,20 +172,35 @@ class _MyRegistrationsScreenState extends State<MyRegistrationsScreen> {
                               onPressed: () async {
                                 // Navigate to Payment screen and reload list when returning
                                 await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (_) => PaymentDetailsScreen(idDangKy: idDangKy))
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => PaymentDetailsScreen(
+                                      idDangKy: idDangKy,
+                                    ),
+                                  ),
                                 );
                                 _loadRegistrations(); // Refresh status!
                               },
-                              icon: const Icon(Icons.payment, color: Colors.white),
-                              label: const Text("PAY NOW", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                              icon: const Icon(
+                                Icons.payment,
+                                color: Colors.white,
+                              ),
+                              label: const Text(
+                                "THANH TOÁN NGAY",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.orange,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
+                                backgroundColor: Colors.orange,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                               ),
                             ),
-                          )
-                        ]
+                          ),
+                        ],
                       ],
                     ),
                   ),

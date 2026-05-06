@@ -9,7 +9,8 @@ class InstructorTransferScreen extends StatefulWidget {
   const InstructorTransferScreen({super.key});
 
   @override
-  State<InstructorTransferScreen> createState() => _InstructorTransferScreenState();
+  State<InstructorTransferScreen> createState() =>
+      _InstructorTransferScreenState();
 }
 
 class _InstructorTransferScreenState extends State<InstructorTransferScreen> {
@@ -34,16 +35,16 @@ class _InstructorTransferScreenState extends State<InstructorTransferScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Approve Transfer'),
+        title: const Text('Phê duyệt chuyển lớp'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Approve transfer for ${request.hoTenHocVien}?'),
+            Text('Phê duyệt chuyển lớp cho ${request.hoTenHocVien}?'),
             const SizedBox(height: 15),
             TextField(
               controller: noteController,
               decoration: const InputDecoration(
-                labelText: 'Approval Note (Optional)',
+                labelText: 'Ghi chú phê duyệt (Tùy chọn)',
                 border: OutlineInputBorder(),
               ),
               maxLines: 2,
@@ -51,27 +52,43 @@ class _InstructorTransferScreenState extends State<InstructorTransferScreen> {
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Hủy'),
+          ),
           ElevatedButton(
             onPressed: () async {
               Navigator.pop(context); // Close dialog
 
               // In a real app, 'approverName' would come from your decoded JWT token or User Profile
               bool success = await _transferService.approveTransfer(
-                  request.idChuyenLop,
-                  "Doan Duy Hieu (Instructor)", // Replace with dynamic instructor name
-                  noteController.text.trim()
+                request.idChuyenLop,
+                "Doan Duy Hieu (Instructor)", // Replace with dynamic instructor name
+                noteController.text.trim(),
               );
 
               if (success) {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Transfer Approved!'), backgroundColor: Colors.green));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Chuyển lớp đã được phê duyệt!'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
                 _loadPendingRequests();
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to approve.'), backgroundColor: Colors.red));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Phê duyệt thất bại.'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
               }
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-            child: const Text('Approve', style: TextStyle(color: Colors.white)),
+            child: const Text(
+              'Phê duyệt',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
@@ -82,23 +99,38 @@ class _InstructorTransferScreenState extends State<InstructorTransferScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Reject Transfer'),
-        content: const Text('Are you sure you want to reject this transfer request?'),
+        title: const Text('Từ chối chuyển lớp'),
+        content: const Text(
+          'Bạn có chắc chắn muốn từ chối yêu cầu chuyển lớp này không?',
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Hủy'),
+          ),
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
               bool success = await _transferService.rejectTransfer(idChuyenLop);
               if (success) {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Transfer Rejected.'), backgroundColor: Colors.orange));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Chuyển lớp bị từ chối.'),
+                    backgroundColor: Colors.orange,
+                  ),
+                );
                 _loadPendingRequests();
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to reject.'), backgroundColor: Colors.red));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Từ chối thất bại.'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
               }
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Reject Request'),
+            child: const Text('Từ chối yêu cầu'),
           ),
         ],
       ),
@@ -112,7 +144,10 @@ class _InstructorTransferScreenState extends State<InstructorTransferScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text("Pending Transfers", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text(
+          "Chuyển giao chờ xử lý",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: const Color(0xFF1E3C72),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -125,7 +160,10 @@ class _InstructorTransferScreenState extends State<InstructorTransferScreen> {
               return const Center(child: CircularProgressIndicator());
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return const Center(
-                child: Text("No pending transfer requests.", style: TextStyle(fontSize: 16, color: Colors.grey)),
+                child: Text(
+                  "Không có yêu cầu chuyển lớp chờ xử lý.",
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
               );
             }
 
@@ -138,7 +176,9 @@ class _InstructorTransferScreenState extends State<InstructorTransferScreen> {
 
                 return Card(
                   margin: const EdgeInsets.only(bottom: 15),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                   elevation: 2,
                   child: Padding(
                     padding: const EdgeInsets.all(16),
@@ -147,20 +187,49 @@ class _InstructorTransferScreenState extends State<InstructorTransferScreen> {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.swap_horiz, color: Color(0xFF1E3C72)),
+                            const Icon(
+                              Icons.swap_horiz,
+                              color: Color(0xFF1E3C72),
+                            ),
                             const SizedBox(width: 8),
-                            Text(req.hoTenHocVien ?? "Student", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            Text(
+                              req.hoTenHocVien ?? "Student",
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
                         const Divider(height: 20),
-                        _buildTransferRoute("From:", req.tenLopCu ?? "Unknown Class", Colors.redAccent),
+                        _buildTransferRoute(
+                          "From:",
+                          req.tenLopCu ?? "Lớp học không xác định",
+                          Colors.redAccent,
+                        ),
                         const SizedBox(height: 8),
-                        _buildTransferRoute("To:", req.tenLopMoi ?? "Unknown Class", Colors.green),
+                        _buildTransferRoute(
+                          "To:",
+                          req.tenLopMoi ?? "Lớp học không xác định",
+                          Colors.green,
+                        ),
                         const SizedBox(height: 12),
-                        Text("Reason: ${req.lyDo ?? 'None provided'}", style: TextStyle(color: Colors.grey.shade700, fontStyle: FontStyle.italic)),
+                        Text(
+                          "L\u00fd do: ${req.lyDo ?? 'Kh\u00f4ng c\u00f3 th\u00f4ng tin'}",
+                          style: TextStyle(
+                            color: Colors.grey.shade700,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
                         if (req.ngayChuyenLop != null) ...[
                           const SizedBox(height: 8),
-                          Text("Requested on: ${dateFormat.format(req.ngayChuyenLop!)}", style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                          Text(
+                            "Y\u00eau c\u1ea7u ng\u00e0y: ${dateFormat.format(req.ngayChuyenLop!)}",
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
                         ],
                         const SizedBox(height: 15),
                         Row(
@@ -168,20 +237,30 @@ class _InstructorTransferScreenState extends State<InstructorTransferScreen> {
                             Expanded(
                               child: OutlinedButton(
                                 onPressed: () => _handleReject(req.idChuyenLop),
-                                style: OutlinedButton.styleFrom(side: const BorderSide(color: Colors.red)),
-                                child: const Text("REJECT", style: TextStyle(color: Colors.red)),
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(color: Colors.red),
+                                ),
+                                child: const Text(
+                                  "TỪ CHỐI",
+                                  style: TextStyle(color: Colors.red),
+                                ),
                               ),
                             ),
                             const SizedBox(width: 10),
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () => _handleApprove(req),
-                                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                                child: const Text("APPROVE", style: TextStyle(color: Colors.white)),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                ),
+                                child: const Text(
+                                  "PHÊ DUYỆT",
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               ),
                             ),
                           ],
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -197,10 +276,24 @@ class _InstructorTransferScreenState extends State<InstructorTransferScreen> {
   Widget _buildTransferRoute(String label, String className, Color iconColor) {
     return Row(
       children: [
-        SizedBox(width: 40, child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey))),
+        SizedBox(
+          width: 40,
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.grey,
+            ),
+          ),
+        ),
         Icon(Icons.circle, size: 10, color: iconColor),
         const SizedBox(width: 8),
-        Expanded(child: Text(className, style: const TextStyle(fontWeight: FontWeight.w600))),
+        Expanded(
+          child: Text(
+            className,
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+        ),
       ],
     );
   }

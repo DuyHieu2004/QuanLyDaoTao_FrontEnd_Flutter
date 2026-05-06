@@ -25,7 +25,9 @@ class _GradingScreenState extends State<GradingScreen> {
 
   void _loadResults() {
     setState(() {
-      _resultsFuture = _examResultService.getResultsBySchedule(widget.scheduleId);
+      _resultsFuture = _examResultService.getResultsBySchedule(
+        widget.scheduleId,
+      );
     });
   }
 
@@ -33,34 +35,38 @@ class _GradingScreenState extends State<GradingScreen> {
   void _showGradingDialog(KetQuaThi studentResult) {
     final TextEditingController scoreController = TextEditingController(
       // If the score is > 0, show current score, otherwise leave blank for new entry
-        text: studentResult.diem > 0 ? studentResult.diem.toString() : ''
+      text: studentResult.diem > 0 ? studentResult.diem.toString() : '',
     );
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Grade: ${studentResult.hoTenHocVien ?? "Student"}'),
+          title: Text('Chấm điểm: ${studentResult.hoTenHocVien ?? "Học viên"}'),
           content: TextField(
             controller: scoreController,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             decoration: const InputDecoration(
-              labelText: 'Score (Diem)',
+              labelText: 'Điểm số (Diem)',
               border: OutlineInputBorder(),
-              hintText: 'e.g., 8.5',
+              hintText: 'ví dụ: 8.5',
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: const Text('Hủy'),
             ),
             ElevatedButton(
               onPressed: () async {
-                final double? newScore = double.tryParse(scoreController.text.trim());
+                final double? newScore = double.tryParse(
+                  scoreController.text.trim(),
+                );
                 if (newScore == null || newScore < 0 || newScore > 10) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please enter a valid score between 0 and 10.')),
+                    const SnackBar(
+                      content: Text('Vui lòng nhập điểm hợp lệ từ 0 đến 10.'),
+                    ),
                   );
                   return;
                 }
@@ -72,30 +78,38 @@ class _GradingScreenState extends State<GradingScreen> {
                 // If it has an ID > 0, it exists -> PUT
                 if (studentResult.idKetQuaThi == 0) {
                   success = await _examResultService.createResult(
-                      widget.scheduleId,
-                      studentResult.idHocVien,
-                      newScore
+                    widget.scheduleId,
+                    studentResult.idHocVien,
+                    newScore,
                   );
                 } else {
                   success = await _examResultService.updateResult(
-                      studentResult.idKetQuaThi,
-                      newScore
+                    studentResult.idKetQuaThi,
+                    newScore,
                   );
                 }
 
                 if (success) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Score saved successfully!'), backgroundColor: Colors.green),
+                    const SnackBar(
+                      content: Text('Điểm đã được lưu thành công!'),
+                      backgroundColor: Colors.green,
+                    ),
                   );
                   _loadResults(); // Refresh the list to show new scores
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Failed to save score.'), backgroundColor: Colors.red),
+                    const SnackBar(
+                      content: Text('Lưu điểm thất bại.'),
+                      backgroundColor: Colors.red,
+                    ),
                   );
                 }
               },
-              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1E3C72)),
-              child: const Text('Save', style: TextStyle(color: Colors.white)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF1E3C72),
+              ),
+              child: const Text('Lưu', style: TextStyle(color: Colors.white)),
             ),
           ],
         );
@@ -108,7 +122,10 @@ class _GradingScreenState extends State<GradingScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text("Exam Grading", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text(
+          "Chấm thi",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: const Color(0xFF1E3C72),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -120,7 +137,9 @@ class _GradingScreenState extends State<GradingScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text("No students found for this schedule."));
+              return const Center(
+                child: Text("Không tìm thấy học viên cho lịch thi này."),
+              );
             }
 
             final results = snapshot.data!;
@@ -136,17 +155,31 @@ class _GradingScreenState extends State<GradingScreen> {
 
                 return Card(
                   margin: const EdgeInsets.only(bottom: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     leading: CircleAvatar(
                       backgroundColor: const Color(0xFF1E3C72).withOpacity(0.1),
                       child: const Icon(Icons.person, color: Color(0xFF1E3C72)),
                     ),
-                    title: Text(res.hoTenHocVien ?? "Unknown Student", style: const TextStyle(fontWeight: FontWeight.bold)),
+                    title: Text(
+                      res.hoTenHocVien ?? "Học viên không rõ",
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     subtitle: Text(
-                      hasScore ? "Status: ${res.ketQua ?? (isPassed ? 'Passed' : 'Failed')}" : "Status: Not Graded",
-                      style: TextStyle(color: hasScore ? (isPassed ? Colors.green : Colors.red) : Colors.grey),
+                      hasScore
+                          ? "Trạng thái: ${res.ketQua ?? (isPassed ? 'Đạt' : 'Không đạt')}"
+                          : "Trạng thái: Chưa chấm",
+                      style: TextStyle(
+                        color: hasScore
+                            ? (isPassed ? Colors.green : Colors.red)
+                            : Colors.grey,
+                      ),
                     ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -154,9 +187,11 @@ class _GradingScreenState extends State<GradingScreen> {
                         Text(
                           hasScore ? res.diem.toStringAsFixed(1) : "-",
                           style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: hasScore ? const Color(0xFF1E3C72) : Colors.grey
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: hasScore
+                                ? const Color(0xFF1E3C72)
+                                : Colors.grey,
                           ),
                         ),
                         const SizedBox(width: 10),

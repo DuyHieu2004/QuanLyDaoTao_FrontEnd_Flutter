@@ -61,12 +61,18 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
 
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Class created successfully!'), backgroundColor: Colors.green),
+        const SnackBar(
+          content: Text('Tạo lớp thành công!'),
+          backgroundColor: Colors.green,
+        ),
       );
       Navigator.pop(context, true); // Return true to trigger a list refresh
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to create class.'), backgroundColor: Colors.red),
+        const SnackBar(
+          content: Text('Tạo lớp thất bại.'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -75,72 +81,100 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Create New Class"),
+        title: const Text("Tạo lớp mới"),
         backgroundColor: const Color(0xFF1E3C72),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              _buildInput(controller: _nameController, label: "Class Name", icon: Icons.class_),
-              const SizedBox(height: 15),
-              _buildInput(
-                  controller: _courseIdController,
-                  label: "Course ID",
-                  icon: Icons.numbers,
-                  isNumber: true
-              ),
-              const SizedBox(height: 15),
-              _buildInput(
-                  controller: _maxStudentsController,
-                  label: "Max Students",
-                  icon: Icons.people,
-                  isNumber: true
-              ),
-              const SizedBox(height: 20),
+              padding: const EdgeInsets.all(20),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    _buildInput(
+                      controller: _nameController,
+                      label: "Tên lớp",
+                      icon: Icons.class_,
+                    ),
+                    const SizedBox(height: 15),
+                    _buildInput(
+                      controller: _courseIdController,
+                      label: "ID khóa học",
+                      icon: Icons.numbers,
+                      isNumber: true,
+                    ),
+                    const SizedBox(height: 15),
+                    _buildInput(
+                      controller: _maxStudentsController,
+                      label: "Số lượng tối đa",
+                      icon: Icons.people,
+                      isNumber: true,
+                    ),
+                    const SizedBox(height: 20),
 
-              // Date Selectors
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildDateTile("Start Date", _startDate, () => _selectDate(context, true)),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: _buildDateTile("End Date", _endDate, () => _selectDate(context, false)),
-                  ),
-                ],
-              ),
+                    // Date Selectors
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildDateTile(
+                            "Ngày bắt đầu",
+                            _startDate,
+                            () => _selectDate(context, true),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: _buildDateTile(
+                            "Ngày kết thúc",
+                            _endDate,
+                            () => _selectDate(context, false),
+                          ),
+                        ),
+                      ],
+                    ),
 
-              const SizedBox(height: 15),
-              SwitchListTile(
-                title: const Text("Allow Registration"),
-                subtitle: const Text("Can students join this class right now?"),
-                value: _allowRegistration,
-                activeColor: const Color(0xFF1E3C72),
-                onChanged: (val) => setState(() => _allowRegistration = val),
-              ),
+                    const SizedBox(height: 15),
+                    SwitchListTile(
+                      title: const Text("Cho phép đăng ký"),
+                      subtitle: const Text(
+                        "Học viên có thể đăng ký lớp này ngay bây giờ không?",
+                      ),
+                      value: _allowRegistration,
+                      activeColor: const Color(0xFF1E3C72),
+                      onChanged: (val) =>
+                          setState(() => _allowRegistration = val),
+                    ),
 
-              _buildInput(controller: _noteController, label: "Notes", icon: Icons.note, maxLines: 3),
+                    _buildInput(
+                      controller: _noteController,
+                      label: "Ghi chú",
+                      icon: Icons.note,
+                      maxLines: 3,
+                    ),
 
-              const SizedBox(height: 30),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: _handleSubmit,
-                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1E3C72)),
-                  child: const Text("CREATE CLASS", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 30),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: _handleSubmit,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF1E3C72),
+                        ),
+                        child: const Text(
+                          "TẠO LỚP",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 
@@ -149,7 +183,7 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
     required String label,
     required IconData icon,
     bool isNumber = false,
-    int maxLines = 1
+    int maxLines = 1,
   }) {
     return TextFormField(
       controller: controller,
@@ -160,7 +194,8 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
         prefixIcon: Icon(icon),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
-      validator: (val) => (val == null || val.isEmpty) ? "Required field" : null,
+      validator: (val) =>
+          (val == null || val.isEmpty) ? "Trường bắt buộc" : null,
     );
   }
 
@@ -176,9 +211,15 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+            Text(
+              label,
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
+            ),
             const SizedBox(height: 5),
-            Text(DateFormat('dd/MM/yyyy').format(date), style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              DateFormat('dd/MM/yyyy').format(date),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ],
         ),
       ),

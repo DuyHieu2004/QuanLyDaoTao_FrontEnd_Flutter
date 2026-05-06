@@ -8,7 +8,11 @@ class StudyGradingScreen extends StatefulWidget {
   final int classId;
   final String className;
 
-  const StudyGradingScreen({super.key, required this.classId, required this.className});
+  const StudyGradingScreen({
+    super.key,
+    required this.classId,
+    required this.className,
+  });
 
   @override
   State<StudyGradingScreen> createState() => _StudyGradingScreenState();
@@ -34,55 +38,104 @@ class _StudyGradingScreenState extends State<StudyGradingScreen> {
   }
 
   void _showGradingDialog(StudyResult result) {
-    final attController = TextEditingController(text: result.diemChuyenCan > 0 ? result.diemChuyenCan.toString() : '');
-    final examController = TextEditingController(text: result.diemThi > 0 ? result.diemThi.toString() : '');
+    final attController = TextEditingController(
+      text: result.diemChuyenCan > 0 ? result.diemChuyenCan.toString() : '',
+    );
+    final examController = TextEditingController(
+      text: result.diemThi > 0 ? result.diemThi.toString() : '',
+    );
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Grade: ${result.hocVienName ?? "Student"}'),
+          title: Text('Đánh giá: ${result.hocVienName ?? "Học viên"}'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: attController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                decoration: const InputDecoration(labelText: 'Attendance Score (Chuyên cần)', prefixIcon: Icon(Icons.co_present)),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                decoration: const InputDecoration(
+                  labelText: 'Điểm chuyên cần',
+                  prefixIcon: Icon(Icons.co_present),
+                ),
               ),
               const SizedBox(height: 15),
               TextField(
                 controller: examController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                decoration: const InputDecoration(labelText: 'Exam Score (Điểm thi)', prefixIcon: Icon(Icons.quiz)),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                decoration: const InputDecoration(
+                  labelText: 'Điểm thi',
+                  prefixIcon: Icon(Icons.quiz),
+                ),
               ),
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Hủy'),
+            ),
             ElevatedButton(
               onPressed: () async {
-                final double? attScore = double.tryParse(attController.text.trim());
-                final double? examScore = double.tryParse(examController.text.trim());
+                final double? attScore = double.tryParse(
+                  attController.text.trim(),
+                );
+                final double? examScore = double.tryParse(
+                  examController.text.trim(),
+                );
 
-                if (attScore == null || examScore == null || attScore < 0 || examScore < 0) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please enter valid positive numbers.')));
+                if (attScore == null ||
+                    examScore == null ||
+                    attScore < 0 ||
+                    examScore < 0) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Vui lòng nhập số hợp lệ lớn hơn hoặc bằng 0.',
+                      ),
+                    ),
+                  );
                   return;
                 }
 
                 Navigator.pop(context); // Close dialog
 
-                bool success = await _service.updateResult(result.idKetQua, attScore, examScore);
+                bool success = await _service.updateResult(
+                  result.idKetQua,
+                  attScore,
+                  examScore,
+                );
 
                 if (success) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Scores updated!'), backgroundColor: Colors.green));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Cập nhật điểm thành công!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
                   _loadData(); // Refresh the list and stats!
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Update failed.'), backgroundColor: Colors.red));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Cập nhật thất bại.'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
                 }
               },
-              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1E3C72)),
-              child: const Text('Save', style: TextStyle(color: Colors.white)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF1E3C72),
+              ),
+              child: const Text(
+                'L\u01b0u',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         );
@@ -95,10 +148,15 @@ class _StudyGradingScreenState extends State<StudyGradingScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: Text(widget.className, style: const TextStyle(color: Colors.white, fontSize: 18)),
+        title: Text(
+          widget.className,
+          style: const TextStyle(color: Colors.white, fontSize: 18),
+        ),
         backgroundColor: const Color(0xFF1E3C72),
         iconTheme: const IconThemeData(color: Colors.white),
-        actions: [IconButton(icon: const Icon(Icons.refresh), onPressed: _loadData)],
+        actions: [
+          IconButton(icon: const Icon(Icons.refresh), onPressed: _loadData),
+        ],
       ),
       body: Column(
         children: [
@@ -106,27 +164,50 @@ class _StudyGradingScreenState extends State<StudyGradingScreen> {
           FutureBuilder<ClassStatistics?>(
             future: _statsFuture,
             builder: (context, snapshot) {
-              if (!snapshot.hasData || snapshot.data == null) return const SizedBox.shrink();
+              if (!snapshot.hasData || snapshot.data == null)
+                return const SizedBox.shrink();
               final stats = snapshot.data!;
 
               return Container(
                 margin: const EdgeInsets.all(16),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(colors: [Color(0xFF1E3C72), Color(0xFF2A5298)]),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
+                  ),
                   borderRadius: BorderRadius.circular(15),
-                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10)],
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                    ),
+                  ],
                 ),
                 child: Column(
                   children: [
-                    const Text("Class Performance", style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold)),
+                    const Text(
+                      "Hiệu suất lớp",
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        _buildStatItem("Avg Score", stats.averageScore.toStringAsFixed(1)),
-                        _buildStatItem("Pass Rate", "${stats.passRate.toStringAsFixed(1)}%"),
-                        _buildStatItem("Passed", "${stats.passed}/${stats.totalStudents}"),
+                        _buildStatItem(
+                          "Điểm TB",
+                          stats.averageScore.toStringAsFixed(1),
+                        ),
+                        _buildStatItem(
+                          "Tỷ lệ đạt",
+                          "${stats.passRate.toStringAsFixed(1)}%",
+                        ),
+                        _buildStatItem(
+                          "Đạt",
+                          "${stats.passed}/${stats.totalStudents}",
+                        ),
                       ],
                     ),
                   ],
@@ -143,7 +224,9 @@ class _StudyGradingScreenState extends State<StudyGradingScreen> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text("No students or results found."));
+                  return const Center(
+                    child: Text("Không tìm thấy học viên hoặc kết quả."),
+                  );
                 }
 
                 final results = snapshot.data!;
@@ -152,30 +235,56 @@ class _StudyGradingScreenState extends State<StudyGradingScreen> {
                   itemCount: results.length,
                   itemBuilder: (context, index) {
                     final res = results[index];
-                    final isPassed = res.ketLuan?.toLowerCase() == 'đạt' || res.ketLuan?.toLowerCase() == 'passed';
+                    final isPassed =
+                        res.ketLuan?.toLowerCase() == 'đạt' ||
+                        res.ketLuan?.toLowerCase() == 'passed';
 
                     return Card(
                       margin: const EdgeInsets.only(bottom: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       child: ListTile(
                         onTap: () => _showGradingDialog(res),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        title: Text(res.hocVienName ?? "Student ID: ${res.idDangKy}", style: const TextStyle(fontWeight: FontWeight.bold)),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        title: Text(
+                          res.hocVienName ?? "Mã học viên: ${res.idDangKy}",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 4),
-                            Text("Attendance: ${res.diemChuyenCan} | Exam: ${res.diemThi}", style: const TextStyle(fontSize: 12)),
+                            Text(
+                              "Chuyên cần: ${res.diemChuyenCan} | Thi: ${res.diemThi}",
+                              style: const TextStyle(fontSize: 12),
+                            ),
                             const SizedBox(height: 2),
-                            Text(res.ketLuan ?? "Pending", style: TextStyle(color: isPassed ? Colors.green : Colors.orange, fontWeight: FontWeight.bold)),
+                            Text(
+                              res.ketLuan ?? "Chưa có",
+                              style: TextStyle(
+                                color: isPassed ? Colors.green : Colors.orange,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
                         trailing: Container(
                           padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(color: Colors.blue.shade50, shape: BoxShape.circle),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.shade50,
+                            shape: BoxShape.circle,
+                          ),
                           child: Text(
                             res.diemTrungBinh.toStringAsFixed(1),
-                            style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1E3C72), fontSize: 16),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF1E3C72),
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       ),
@@ -193,9 +302,19 @@ class _StudyGradingScreenState extends State<StudyGradingScreen> {
   Widget _buildStatItem(String label, String value) {
     return Column(
       children: [
-        Text(value, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+        Text(
+          value,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         const SizedBox(height: 4),
-        Text(label, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+        Text(
+          label,
+          style: const TextStyle(color: Colors.white70, fontSize: 12),
+        ),
       ],
     );
   }

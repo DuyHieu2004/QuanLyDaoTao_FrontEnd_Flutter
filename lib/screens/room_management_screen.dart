@@ -30,41 +30,57 @@ class _RoomManagementScreenState extends State<RoomManagementScreen> {
   // Dialog for both CREATING and EDITING a room
   void _showRoomDialog({PhongThi? room}) {
     final bool isEditing = room != null;
-    final TextEditingController nameController = TextEditingController(text: isEditing ? room.tenPhong : '');
-    final TextEditingController capacityController = TextEditingController(text: isEditing ? room.soLuong.toString() : '');
+    final TextEditingController nameController = TextEditingController(
+      text: isEditing ? room.tenPhong : '',
+    );
+    final TextEditingController capacityController = TextEditingController(
+      text: isEditing ? room.soLuong.toString() : '',
+    );
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(isEditing ? 'Edit Room' : 'Add New Room'),
+          title: Text(isEditing ? 'Chỉnh sửa phòng' : 'Thêm phòng mới'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: nameController,
-                decoration: const InputDecoration(labelText: 'Room Name (e.g., A101)', prefixIcon: Icon(Icons.meeting_room)),
+                decoration: const InputDecoration(
+                  labelText: 'Tên phòng (ví dụ: A101)',
+                  prefixIcon: Icon(Icons.meeting_room),
+                ),
               ),
               const SizedBox(height: 15),
               TextField(
                 controller: capacityController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Capacity', prefixIcon: Icon(Icons.people)),
+                decoration: const InputDecoration(
+                  labelText: 'Sức chứa',
+                  prefixIcon: Icon(Icons.people),
+                ),
               ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: const Text('Hủy'),
             ),
             ElevatedButton(
               onPressed: () async {
                 final String name = nameController.text.trim();
-                final int? capacity = int.tryParse(capacityController.text.trim());
+                final int? capacity = int.tryParse(
+                  capacityController.text.trim(),
+                );
 
                 if (name.isEmpty || capacity == null || capacity <= 0) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please enter a valid name and capacity.')));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Vui lòng nhập tên và sức chứa hợp lệ.'),
+                    ),
+                  );
                   return;
                 }
 
@@ -72,22 +88,38 @@ class _RoomManagementScreenState extends State<RoomManagementScreen> {
 
                 bool success;
                 if (isEditing) {
-                  success = await _roomService.updateRoom(room.idPhong, name, capacity);
+                  success = await _roomService.updateRoom(
+                    room.idPhong,
+                    name,
+                    capacity,
+                  );
                 } else {
                   success = await _roomService.createRoom(name, capacity);
                 }
 
                 if (success) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(isEditing ? 'Room updated!' : 'Room created!'), backgroundColor: Colors.green)
+                    SnackBar(
+                      content: Text(
+                        isEditing ? 'Đã cập nhật phòng!' : 'Đã tạo phòng!',
+                      ),
+                      backgroundColor: Colors.green,
+                    ),
                   );
                   _loadRooms(); // Refresh the list
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Operation failed.'), backgroundColor: Colors.red));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Thao tác không thành công.'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
                 }
               },
-              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1E3C72)),
-              child: const Text('Save', style: TextStyle(color: Colors.white)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF1E3C72),
+              ),
+              child: const Text('Lưu', style: TextStyle(color: Colors.white)),
             ),
           ],
         );
@@ -100,23 +132,40 @@ class _RoomManagementScreenState extends State<RoomManagementScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Room'),
-        content: const Text('Are you sure you want to delete this room? This action cannot be undone.'),
+        title: const Text('Xóa phòng học'),
+        content: const Text(
+          'Bạn có chắc chắn muốn xóa phòng học này? Hành động này không thể hoàn tác.',
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Hủy'),
+          ),
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
               bool success = await _roomService.deleteRoom(idPhong);
               if (success) {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Room deleted!'), backgroundColor: Colors.green));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Phòng học đã được xóa!'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
                 _loadRooms();
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to delete room. It might be in use.'), backgroundColor: Colors.red));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Xóa phòng học thất bại. Có thể phòng đang được sử dụng.',
+                    ),
+                    backgroundColor: Colors.red,
+                  ),
+                );
               }
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
+            child: const Text('Xóa'),
           ),
         ],
       ),
@@ -128,7 +177,10 @@ class _RoomManagementScreenState extends State<RoomManagementScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text("Room Management", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text(
+          "Quản lý phòng",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: const Color(0xFF1E3C72),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -140,7 +192,9 @@ class _RoomManagementScreenState extends State<RoomManagementScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text("No rooms available. Tap + to add one."));
+              return const Center(
+                child: Text("Hiện không có phòng. Nhấn + để thêm phòng mới."),
+              );
             }
 
             final rooms = snapshot.data!;
@@ -151,14 +205,28 @@ class _RoomManagementScreenState extends State<RoomManagementScreen> {
                 final room = rooms[index];
                 return Card(
                   margin: const EdgeInsets.only(bottom: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   child: ListTile(
                     leading: Container(
                       padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(color: Colors.blue.shade50, borderRadius: BorderRadius.circular(8)),
-                      child: const Icon(Icons.meeting_room, color: Color(0xFF1E3C72)),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.meeting_room,
+                        color: Color(0xFF1E3C72),
+                      ),
                     ),
-                    title: Text(room.tenPhong, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    title: Text(
+                      room.tenPhong,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
                     subtitle: Text("Capacity: ${room.soLuong} seats"),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -168,7 +236,10 @@ class _RoomManagementScreenState extends State<RoomManagementScreen> {
                           onPressed: () => _showRoomDialog(room: room),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.delete_outline, color: Colors.red),
+                          icon: const Icon(
+                            Icons.delete_outline,
+                            color: Colors.red,
+                          ),
                           onPressed: () => _confirmDelete(room.idPhong),
                         ),
                       ],
@@ -182,7 +253,8 @@ class _RoomManagementScreenState extends State<RoomManagementScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xFF1E3C72),
-        onPressed: () => _showRoomDialog(), // Passing null means we are creating a new room
+        onPressed: () =>
+            _showRoomDialog(), // Passing null means we are creating a new room
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );

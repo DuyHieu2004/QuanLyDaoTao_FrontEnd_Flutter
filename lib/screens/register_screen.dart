@@ -31,7 +31,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _emailController.text.isEmpty ||
         _phoneController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all fields!')),
+        const SnackBar(
+          content: Text('Vui lòng điền đầy đủ tất cả các trường!'),
+        ),
       );
       return;
     }
@@ -56,8 +58,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Registration successful! Please log in.'),
-            backgroundColor: Colors.green
+          content: Text('Đăng ký thành công! Vui lòng đăng nhập.'),
+          backgroundColor: Colors.green,
         ),
       );
       // Navigate back to the Login Screen
@@ -65,8 +67,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Registration failed. Username or email might already exist.'),
-            backgroundColor: Colors.red
+          content: Text(
+            'Đăng ký thất bại. Tên đăng nhập hoặc email có thể đã tồn tại.',
+          ),
+          backgroundColor: Colors.red,
         ),
       );
     }
@@ -83,7 +87,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          'Create Account',
+          'Tạo tài khoản',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -95,15 +99,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF1E3C72),
-              Color(0xFF2A5298),
-            ],
+            colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
           ),
         ),
         child: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 30.0,
+              vertical: 20.0,
+            ),
             child: Column(
               children: [
                 const Icon(
@@ -132,7 +136,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       // Full Name Input
                       _buildTextField(
                         controller: _fullNameController,
-                        label: 'Full Name',
+                        label: 'Họ và tên',
                         icon: Icons.badge_outlined,
                       ),
                       const SizedBox(height: 15),
@@ -149,7 +153,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       // Phone Input
                       _buildTextField(
                         controller: _phoneController,
-                        label: 'Phone Number',
+                        label: 'Số điện thoại',
                         icon: Icons.phone_android_outlined,
                         keyboardType: TextInputType.phone,
                       ),
@@ -158,7 +162,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       // Username Input
                       _buildTextField(
                         controller: _usernameController,
-                        label: 'Username',
+                        label: 'Tên đăng nhập',
                         icon: Icons.person_outline,
                       ),
                       const SizedBox(height: 15),
@@ -168,11 +172,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         controller: _passwordController,
                         obscureText: _obscureText,
                         decoration: InputDecoration(
-                          labelText: 'Password',
+                          labelText: 'Mật khẩu',
                           prefixIcon: const Icon(Icons.lock_outline),
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _obscureText ? Icons.visibility_off : Icons.visibility,
+                              _obscureText
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
                               color: Colors.grey,
                             ),
                             onPressed: () {
@@ -206,15 +212,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             elevation: 5,
                           ),
                           child: _isLoading
-                              ? const CircularProgressIndicator(color: Colors.white)
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
                               : const Text(
-                            'SIGN UP',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
+                                  'ĐĂNG KÝ',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
                         ),
                       ),
                     ],
@@ -241,9 +249,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Colors.grey.shade300),

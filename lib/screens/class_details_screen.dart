@@ -31,17 +31,22 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
     bool? confirm = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Confirm Registration'),
-        content: const Text('Do you want to enroll in this class?'),
+        title: const Text('Xác nhận đăng ký'),
+        content: const Text('Bạn có muốn đăng ký lớp học này không?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: const Text('Hủy'),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1E3C72)),
-            child: const Text('Confirm', style: TextStyle(color: Colors.white)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF1E3C72),
+            ),
+            child: const Text(
+              'Xác nhận',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
@@ -61,13 +66,18 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
 
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Registration successful!'), backgroundColor: Colors.green),
+        const SnackBar(
+          content: Text('Đăng ký thành công!'),
+          backgroundColor: Colors.green,
+        ),
       );
       Navigator.pop(context, true); // Return true to refresh the previous list
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Registration failed. The class might be full or already registered.'),
+          content: Text(
+            'Đăng ký thất bại. Lớp học có thể đã đầy hoặc đã đăng ký.',
+          ),
           backgroundColor: Colors.red,
         ),
       );
@@ -79,7 +89,10 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text("Class Information", style: TextStyle(color: Colors.white)),
+        title: const Text(
+          "Thông tin lớp học",
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: const Color(0xFF1E3C72),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -90,7 +103,9 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData || snapshot.data == null) {
-            return const Center(child: Text("Could not load class details."));
+            return const Center(
+              child: Text("Không thể tải thông tin lớp học."),
+            );
           }
 
           final lop = snapshot.data!;
@@ -111,27 +126,50 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(15),
-                          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 10,
+                            ),
+                          ],
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               lop.tenLop,
-                              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF1E3C72)),
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF1E3C72),
+                              ),
                             ),
                             const SizedBox(height: 15),
-                            _buildInfoRow(Icons.calendar_today, "Schedule", "${dateFormat.format(lop.ngayBatDau)} - ${dateFormat.format(lop.ngayKetThuc)}"),
+                            _buildInfoRow(
+                              Icons.calendar_today,
+                              "Lịch học",
+                              "${dateFormat.format(lop.ngayBatDau)} - ${dateFormat.format(lop.ngayKetThuc)}",
+                            ),
                             const Divider(height: 30),
-                            _buildInfoRow(Icons.people, "Capacity", "${lop.siSoToiDa} students maximum"),
+                            _buildInfoRow(
+                              Icons.people,
+                              "Sức chứa",
+                              "${lop.siSoToiDa} học viên tối đa",
+                            ),
                             const SizedBox(height: 10),
-                            _buildInfoRow(Icons.how_to_reg, "Enrolled", "${lop.soHocVienDangKy} students"),
+                            _buildInfoRow(
+                              Icons.how_to_reg,
+                              "Đã đăng ký",
+                              "${lop.soHocVienDangKy} học viên",
+                            ),
                             const SizedBox(height: 10),
                             _buildInfoRow(
                               Icons.event_seat,
-                              "Seats Left",
+                              "Chỗ còn lại",
                               "${lop.soChoConLai}",
-                              valueColor: lop.soChoConLai < 5 ? Colors.red : Colors.green,
+                              valueColor: lop.soChoConLai < 5
+                                  ? Colors.red
+                                  : Colors.green,
                             ),
                           ],
                         ),
@@ -141,7 +179,13 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
 
                       // Notes Section
                       if (lop.ghiChu != null && lop.ghiChu!.isNotEmpty) ...[
-                        const Text("Important Notes", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        const Text(
+                          "Lưu ý quan trọng",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         const SizedBox(height: 10),
                         Container(
                           width: double.infinity,
@@ -151,9 +195,12 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(color: Colors.amber.shade200),
                           ),
-                          child: Text(lop.ghiChu!, style: TextStyle(color: Colors.brown.shade800)),
+                          child: Text(
+                            lop.ghiChu!,
+                            style: TextStyle(color: Colors.brown.shade800),
+                          ),
                         ),
-                      ]
+                      ],
                     ],
                   ),
                 ),
@@ -164,27 +211,51 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10, offset: const Offset(0, -3))],
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 10,
+                      offset: const Offset(0, -3),
+                    ),
+                  ],
                 ),
                 child: SizedBox(
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: (isAvailable && !_isRegistering) ? _handleRegistration : null,
+                    onPressed: (isAvailable && !_isRegistering)
+                        ? _handleRegistration
+                        : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1E3C72),
                       disabledBackgroundColor: Colors.grey[300],
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                     child: _isRegistering
-                        ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
                         : Text(
-                      isAvailable ? "CONFIRM REGISTRATION" : "REGISTRATION CLOSED",
-                      style: TextStyle(color: isAvailable ? Colors.white : Colors.grey[600], fontWeight: FontWeight.bold),
-                    ),
+                            isAvailable
+                                ? "XÁC NHẬN ĐĂNG KÝ"
+                                : "ĐĂNG KÝ ĐÃ ĐÓNG",
+                            style: TextStyle(
+                              color: isAvailable
+                                  ? Colors.white
+                                  : Colors.grey[600],
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ),
-              )
+              ),
             ],
           );
         },
@@ -192,16 +263,28 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value, {Color? valueColor}) {
+  Widget _buildInfoRow(
+    IconData icon,
+    String label,
+    String value, {
+    Color? valueColor,
+  }) {
     return Row(
       children: [
         Icon(icon, size: 20, color: Colors.grey[600]),
         const SizedBox(width: 10),
-        Text("$label: ", style: TextStyle(color: Colors.grey[600], fontSize: 15)),
+        Text(
+          "$label: ",
+          style: TextStyle(color: Colors.grey[600], fontSize: 15),
+        ),
         Expanded(
           child: Text(
             value,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: valueColor ?? Colors.black87),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+              color: valueColor ?? Colors.black87,
+            ),
           ),
         ),
       ],

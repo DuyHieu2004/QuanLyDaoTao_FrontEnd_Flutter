@@ -37,7 +37,10 @@ class _CourseListScreenState extends State<CourseListScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text("Course Catalog", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text(
+          "Danh mục khóa học",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: const Color(0xFF1E3C72),
         centerTitle: true,
       ),
@@ -49,7 +52,7 @@ class _CourseListScreenState extends State<CourseListScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text("No courses available."));
+              return const Center(child: Text("Hiện không có khóa học nào."));
             }
 
             final courses = snapshot.data!;
@@ -61,7 +64,9 @@ class _CourseListScreenState extends State<CourseListScreen> {
                 return Card(
                   elevation: 3,
                   margin: const EdgeInsets.only(bottom: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                   child: ListTile(
                     contentPadding: const EdgeInsets.all(16),
                     leading: Container(
@@ -71,17 +76,35 @@ class _CourseListScreenState extends State<CourseListScreen> {
                         color: Colors.blue.shade50,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(Icons.school, color: Color(0xFF1E3C72), size: 30),
+                      child: const Icon(
+                        Icons.school,
+                        color: Color(0xFF1E3C72),
+                        size: 30,
+                      ),
                     ),
-                    title: Text(course.tenKhoaHoc, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    title: Text(
+                      course.tenKhoaHoc,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
                     subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 8.0), // <-- This line is fixed
+                      padding: const EdgeInsets.only(
+                        top: 8.0,
+                      ), // <-- This line is fixed
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Duration: ${course.thoiLuong} hours"),
+                          Text("Thời lượng: ${course.thoiLuong} giờ"),
                           const SizedBox(height: 4),
-                          Text("Tuition: ${formatCurrency.format(course.hocPhi)}", style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+                          Text(
+                            "Học phí: ${formatCurrency.format(course.hocPhi)}",
+                            style: const TextStyle(
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ],
                       ),
                     ),
