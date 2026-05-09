@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import '../models/class_model.dart';
 import '../services/class_service.dart';
 import '../services/registration_service.dart';
+import 'payment_details_screen.dart'; // Thêm import này
 
 class ClassDetailsScreen extends StatefulWidget {
   final int idLop;
@@ -57,20 +58,32 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
     // 2. Process Registration
     setState(() => _isRegistering = true);
 
-    bool success = await _registrationService.registerForClass(widget.idLop);
+    Map<String, dynamic> result = await _registrationService.registerForClass(widget.idLop);
 
     setState(() => _isRegistering = false);
 
     // 3. Handle Result
     if (!mounted) return;
 
-    if (success) {
+    if (result['success'] == true) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Đăng ký thành công!'),
+          content: Text('Đăng ký thành công! Đang chuyển đến thanh toán...'),
           backgroundColor: Colors.green,
         ),
       );
+      
+      // Navigate to PaymentDetailsScreen
+      int idDangKy = result['idDangKy'] ?? 0;
+      if (idDangKy > 0) {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => PaymentDetailsScreen(idDangKy: idDangKy),
+          ),
+        );
+      }
+      
       Navigator.pop(context, true); // Return true to refresh the previous list
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

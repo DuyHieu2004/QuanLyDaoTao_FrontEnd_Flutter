@@ -1,6 +1,7 @@
 // file: lib/screens/home_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:khoa_luan_cu_nhan/screens/profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // IMPORTANT: Added this import
 import '../services/auth_service.dart';
 import 'grading_screen.dart';
@@ -13,6 +14,9 @@ import 'my_certificates_screen.dart';
 import 'study_grading_screen.dart';
 import 'my_registrations_screen.dart';
 import 'register_instructor_screen.dart';
+import 'my_study_results_screen.dart';
+import 'instructor_schedule_screen.dart';
+import 'instructor_remuneration_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -94,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _buildDashboard(),
           const Center(child: Text('Lịch học & Lớp học')),
           const Center(child: Text('Thông báo')),
-          _buildProfileScreen(),
+          const ProfileScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -215,8 +219,9 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
         _buildMenuCard('Kết quả học tập', Icons.auto_graph, Colors.green, () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Mô-đun kết quả học tập sắp ra mắt!')),
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const MyStudyResultsScreen()),
           );
         }),
         _buildMenuCard('Chứng chỉ', Icons.workspace_premium, Colors.amber, () {
@@ -248,7 +253,7 @@ class _HomeScreenState extends State<HomeScreen> {
           () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const ClassListScreen()),
+              MaterialPageRoute(builder: (_) => const InstructorScheduleScreen()),
             );
           },
         ),
@@ -278,19 +283,12 @@ class _HomeScreenState extends State<HomeScreen> {
           Icons.payments_outlined,
           Colors.brown,
           () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Mô-đun chi phí giảng dạy sắp ra mắt!'),
-              ),
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const InstructorRemunerationScreen()),
             );
           },
         ),
-        _buildMenuCard('Chuyển lớp', Icons.move_up, Colors.blueGrey, () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const InstructorTransferScreen()),
-          );
-        }),
         _buildMenuCard('Thống kê học viên', Icons.analytics, Colors.blue, () {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -336,54 +334,5 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildProfileScreen() {
-    return ListView(
-      padding: const EdgeInsets.all(20),
-      children: [
-        const SizedBox(height: 40),
-        const CircleAvatar(
-          radius: 50,
-          backgroundColor: Color(0xFF1E3C72),
-          child: Icon(Icons.person, size: 50, color: Colors.white),
-        ),
-        const SizedBox(height: 20),
-        Center(
-          child: Text(
-            isTeacher ? "Chế độ giảng viên" : "Chế độ học viên",
-            style: const TextStyle(fontSize: 14, color: Colors.grey),
-          ),
-        ),
-        const SizedBox(height: 30),
-        if (!isTeacher) ...[
-          ListTile(
-            leading: const Icon(Icons.school, color: Color(0xFF1E3C72)),
-            title: const Text('Đăng ký làm giảng viên'),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const RegisterInstructorScreen(),
-              ),
-            ),
-          ),
-          const Divider(),
-        ],
-        ListTile(
-          leading: const Icon(Icons.lock_reset, color: Color(0xFF1E3C72)),
-          title: const Text('Đổi mật khẩu'),
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const ChangePasswordScreen(),
-            ),
-          ),
-        ),
-        const Divider(),
-        ListTile(
-          leading: const Icon(Icons.logout, color: Colors.red),
-          title: const Text('Đăng xuất', style: TextStyle(color: Colors.red)),
-          onTap: _handleLogout,
-        ),
-      ],
-    );
-  }
+
 }

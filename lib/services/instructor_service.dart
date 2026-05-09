@@ -106,4 +106,50 @@ class InstructorService {
       return false;
     }
   }
+
+  Future<List<dynamic>> getMySchedule() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('jwt_token');
+
+    try {
+      final response = await http.get(
+        Uri.parse('${ApiConstants.baseUrl}/api/giangvien/my-schedule'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+      return [];
+    } catch (e) {
+      print("Error fetching instructor schedule: $e");
+      return [];
+    }
+  }
+
+  Future<Map<String, dynamic>?> getMyRemuneration() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('jwt_token');
+
+    try {
+      final response = await http.get(
+        Uri.parse('${ApiConstants.baseUrl}/api/giangvien/my-remuneration'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+      return null;
+    } catch (e) {
+      print("Error fetching instructor remuneration: $e");
+      return null;
+    }
+  }
 }

@@ -80,6 +80,35 @@ class ClassService {
     }
   }
 
+  // Thêm hàm này vào trong class ClassService
+  // GET /api/lophoc/available/{idHocVien}
+  Future<List<LopHoc>> getAvailableClasses(int idHocVien) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('jwt_token');
+
+    try {
+      final response = await http.get(
+        Uri.parse('${ApiConstants.lopHocEndpoint}/available/$idHocVien'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> body = jsonDecode(response.body);
+        return body.map((dynamic item) => LopHoc.fromJson(item)).toList();
+      } else {
+        throw Exception("Lỗi tải danh sách lớp học");
+      }
+    } catch (e) {
+      print("Error fetching available classes: $e");
+      return [];
+    }
+  }
+
+  
+
   Future<List<LopHoc>> getAllClasses() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('jwt_token');
