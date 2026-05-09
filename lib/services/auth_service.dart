@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../api_constants.dart';
 
 class AuthService {
-  // Helper method to get the saved JWT token
+  // Hàm phụ trợ lấy token
   Future<String?> _getToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('jwt_token');
@@ -28,59 +28,81 @@ class AuthService {
       );
 
       if (response.statusCode == 200) {
-        // 1. Get the token string
-        String token = response.body;
+        // QUAN TRỌNG: Backend trả về JSON dạng { "token": "..." } nên phải phân tích JSON ra
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        String token = responseData['token'];
 
-        // 2. Decode the token to get the user claims (like the role)
+        // Giải mã token để lấy ID và Role
         int roleId = _extractRoleIdFromToken(token);
+        int userId = _extractUserIdFromToken(token);
 
-        // 3. Save BOTH to SharedPreferences
+        // Lưu vào bộ nhớ máy
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('jwt_token', token);
-        await prefs.setInt('role_id', roleId); // The HomeScreen needs this!
+        await prefs.setInt('role_id', roleId); 
+        await prefs.setInt('user_id', userId); 
 
         return true;
       }
       return false;
     } catch (e) {
-      print("Login connection error: $e");
+      print("Lỗi kết nối Login: $e");
       return false;
     }
   }
 
-  // --- HELPER METHOD TO DECODE JWT ---
-  int _extractRoleIdFromToken(String token) {
+  // --- LẤY USER ID ---
+  int _extractUserIdFromToken(String token) {
     try {
-      // JWTs have 3 parts separated by dots. The payload is the middle part.
       final parts = token.split('.');
-      if (parts.length != 3) {
-        return 2; // Default to HocVien (Student) if token is weird
-      }
+      if (parts.length != 3) return 1;
 
       final payload = parts[1];
-
-      // Base64Url decoding requires padding handling
       String normalized = base64Url.normalize(payload);
       String resp = utf8.decode(base64Url.decode(normalized));
-
       final payloadMap = jsonDecode(resp);
 
-      // Extract the role.
-      // Note: .NET often uses long URI strings for roles. You might need to adjust this key.
-      // Common .NET keys are 'role', 'roles', or 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
-      var roleClaim = payloadMap['role'] ??
-          payloadMap['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ??
-          payloadMap['IdVaiTro']; // Add your specific key if you know it
+      // Nhìn vào C# của bạn: new Claim("UserId", user.IdTaiKhoan.ToString())
+      // Nên ở đây mình chỉ cần gọi đúng chữ "UserId" là ra!
+      var idClaim = payloadMap['UserId'];
+
+      if (idClaim != null) {
+        return int.tryParse(idClaim.toString()) ?? 1;
+      }
+      return 1; 
+    } catch (e) {
+      print("Lỗi giải mã User ID: $e");
+      return 1;
+    }
+  }
+
+  // --- LẤY ROLE ID ---
+  int _extractRoleIdFromToken(String token) {
+    try {
+      final parts = token.split('.');
+      if (parts.length != 3) return 2;
+
+      final payload = parts[1];
+      String normalized = base64Url.normalize(payload);
+      String resp = utf8.decode(base64Url.decode(normalized));
+      final payloadMap = jsonDecode(resp);
+
+      // Lấy Role ra
+      var roleClaim = payloadMap['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ?? 
+                      payloadMap['role'];
 
       if (roleClaim != null) {
-        // Convert it to an int (in case it comes through as a String like "3")
-        return int.tryParse(roleClaim.toString()) ?? 2;
+        String roleStr = roleClaim.toString().toLowerCase();
+        // Nhìn C#: user.VaiTro!.TenVaiTro (Trúng chữ Giảng viên thì cho là số 3, còn lại là 2 - học viên)
+        if (roleStr.contains("giảng viên") || roleStr.contains("giangvien") || roleStr.contains("giang vien")) {
+          return 3; 
+        }
+        return 2; // Học viên
       }
-
-      return 2; // Default to Student
+      return 2; 
     } catch (e) {
-      print("Error decoding token: $e");
-      return 2; // Default to Student on error
+      print("Lỗi giải mã Role: $e");
+      return 2; 
     }
   }
 
@@ -102,13 +124,12 @@ class AuthService {
         }),
       );
 
-      // Assuming your backend returns 200 OK or 201 Created on success
       if (response.statusCode == 200 || response.statusCode == 201) {
         return true;
       }
       return false;
     } catch (e) {
-      print("Register connection error: $e");
+      print("Lỗi kết nối Register: $e");
       return false;
     }
   }
@@ -117,14 +138,14 @@ class AuthService {
   Future<bool> changePassword(String matKhauCu, String matKhauMoi, String xacNhanMatKhau) async {
     try {
       String? token = await _getToken();
-      if (token == null) return false; // Not logged in
+      if (token == null) return false; 
 
       final response = await http.post(
         Uri.parse(ApiConstants.changePasswordEndpoint),
         headers: {
           'Content-Type': 'application/json',
           'accept': '*/*',
-          'Authorization': 'Bearer $token', // Attach JWT token for secure access
+          'Authorization': 'Bearer $token', 
         },
         body: jsonEncode({
           "matKhauCu": matKhauCu,
@@ -138,7 +159,57 @@ class AuthService {
       }
       return false;
     } catch (e) {
-      print("Change password connection error: $e");
+      print("Lỗi kết nối đổi mật khẩu: $e");
+      return false;
+    }
+  }
+
+  // --- LẤY HỒ SƠ ---
+  Future<Map<String, dynamic>?> getMyProfile() async {
+    try {
+      String? token = await _getToken();
+      if (token == null) return null;
+
+      final response = await http.get(
+        Uri.parse('${ApiConstants.baseUrl}/api/auth/my-profile'),
+        headers: {
+          'accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+      return null;
+    } catch (e) {
+      print("Lỗi lấy hồ sơ: $e");
+      return null;
+    }
+  }
+
+  // --- CẬP NHẬT HỒ SƠ ---
+  Future<bool> updateMyProfile(Map<String, dynamic> data) async {
+    try {
+      String? token = await _getToken();
+      if (token == null) return false;
+
+      final response = await http.put(
+        Uri.parse('${ApiConstants.baseUrl}/api/auth/my-profile'),
+        headers: {
+          'Content-Type': 'application/json',
+          'accept': '*/*',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(data),
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print("Lỗi cập nhật hồ sơ: $e");
       return false;
     }
   }
@@ -148,7 +219,6 @@ class AuthService {
     try {
       String? token = await _getToken();
 
-      // If the backend requires a token to blacklist it on logout:
       if (token != null) {
         await http.post(
           Uri.parse(ApiConstants.logoutEndpoint),
@@ -158,16 +228,13 @@ class AuthService {
           },
         );
       }
-
     } catch (e) {
-      print("Logout error: $e");
-
-      // Still remove the token locally even if the server connection fails
-
-    }
-    finally{
+      print("Lỗi đăng xuất: $e");
+    } finally {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('jwt_token');
+      await prefs.remove('role_id');
+      await prefs.remove('user_id'); 
       return true;
     }
   }

@@ -28,7 +28,7 @@ class RegistrationService {
     }
   }
 
-  Future<bool> registerForClass(int idLop) async {
+  Future<Map<String, dynamic>> registerForClass(int idLop) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('jwt_token') ?? '';
     final int idHocVien = _extractUserIdFromToken(token);
@@ -42,21 +42,29 @@ class RegistrationService {
           'Accept': '*/*',
         },
         body: jsonEncode({
-          "idLop": idLop,
+          "idLopHoc": idLop,
           "idHocVien": idHocVien,
         }),
       );
 
       // Check if registration was successful (usually 200 OK or 201 Created)
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return true;
+        final data = jsonDecode(response.body);
+        return {
+          'success': true,
+          'idDangKy': data['idDangKy'] ?? 0,
+        };
       } else {
         print("Registration failed: ${response.body}");
-        return false;
+        return {
+          'success': false,
+        };
       }
     } catch (e) {
       print("Connection error during registration: $e");
-      return false;
+      return {
+        'success': false,
+      };
     }
   }
 

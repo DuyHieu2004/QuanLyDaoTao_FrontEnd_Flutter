@@ -1,9 +1,14 @@
 // file: lib/screens/class_list_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import '../services/class_service.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Thêm import này
 import '../models/class_model.dart';
+import '../services/class_service.dart';
+import '../blocs/class_bloc/class_bloc.dart';
+import '../blocs/class_bloc/class_event.dart';
+import '../blocs/class_bloc/class_state.dart';
 import 'class_details_screen.dart';
 
 class ClassListScreen extends StatefulWidget {
@@ -14,71 +19,166 @@ class ClassListScreen extends StatefulWidget {
 }
 
 class _ClassListScreenState extends State<ClassListScreen> {
-  final ClassService _classService = ClassService();
-  late Future<List<LopHoc>> _classesFuture;
+  int? currentStudentId;
+  bool isLoadingId = true; // Biến cờ để chờ load ID xong mới vẽ giao diện
+  String _searchQuery = '';
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
-    _loadClasses();
+    _loadStudentId();
   }
 
-  // Method to (re)load the data
-  void _loadClasses() {
+  // Hàm bất đồng bộ để lấy ID từ vùng nhớ
+  Future<void> _loadStudentId() async {
+    final prefs = await SharedPreferences.getInstance();
+    
+    // TODO: Sửa lại chữ 'user_id' cho đúng với key bạn đã set lúc gọi hàm Login nhé
+    final int? storedId = prefs.getInt('user_id'); 
+
     setState(() {
-      _classesFuture = _classService.getAllClasses();
+      currentStudentId = storedId ?? 1; // Nếu null (lỗi gì đó) thì fallback về 1 để app không crash
+      isLoadingId = false; // Load xong rồi, cho phép vẽ giao diện
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        title: const Text(
-          "Lớp học hiện có",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        centerTitle: true,
-        backgroundColor: const Color(0xFF1E3C72),
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh, color: Colors.white),
-            onPressed: _loadClasses,
+    // Trong lúc đang moi ID từ SharedPreferences ra thì hiện vòng xoay mờ mờ
+    if (isLoadingId || currentStudentId == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    return BlocProvider(
+      // Khởi tạo BLoC và bắn ngay event fetch data bằng ID vừa lấy được
+      create: (context) => ClassBloc(classService: ClassService())
+        ..add(FetchAvailableClasses(idHocVien: currentStudentId!)),
+      child: Scaffold(
+        backgroundColor: Colors.grey[100],
+        appBar: AppBar(
+          title: const Text(
+            "Lớp học có sẵn",
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
           ),
-        ],
-      ),
-      // RefreshIndicator allows you to "pull down" to reload the list
-      body: RefreshIndicator(
-        onRefresh: () async => _loadClasses(),
-        child: FutureBuilder<List<LopHoc>>(
-          future: _classesFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return _buildErrorState(snapshot.error.toString());
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return _buildEmptyState();
-            }
-
-            final classes = snapshot.data!;
-
-            return ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-              itemCount: classes.length,
-              itemBuilder: (context, index) {
-                return _buildClassCard(classes[index]);
-              },
-            );
-          },
+          centerTitle: true,
+          backgroundColor: const Color(0xFF1E3C72),
+          elevation: 0,
+          actions: [
+            Builder(
+              builder: (context) => IconButton(
+                icon: const Icon(Icons.refresh, color: Colors.white),
+                onPressed: () {
+                  context.read<ClassBloc>().add(FetchAvailableClasses(idHocVien: currentStudentId!));
+                },
+              ),
+            ),
+          ],
         ),
+        body: _buildBody(),
       ),
     );
   }
 
-  Widget _buildClassCard(LopHoc lop) {
+  Widget _buildBody() {
+    return Builder(
+      builder: (context) {
+        return RefreshIndicator(
+          onRefresh: () async {
+            context.read<ClassBloc>().add(FetchAvailableClasses(idHocVien: currentStudentId!));
+          },
+          child: BlocBuilder<ClassBloc, ClassState>(
+            builder: (context, state) {
+              if (state is ClassLoading || state is ClassInitial) {
+                return const Center(child: CircularProgressIndicator());
+              } 
+              
+              else if (state is ClassError) {
+                return _buildErrorState(context, state.message);
+              } 
+              
+              else if (state is ClassLoaded) {
+                if (state.classes.isEmpty) {
+                  return _buildEmptyState();
+                }
+
+                // Lọc danh sách theo từ khóa tìm kiếm
+                final filteredClasses = state.classes.where((lop) {
+                  final className = lop.tenLop.toLowerCase();
+                  final searchLower = _searchQuery.toLowerCase();
+                  return className.contains(searchLower);
+                }).toList();
+
+                return Column(
+                  children: [
+                    // Thanh tìm kiếm
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: TextField(
+                        controller: _searchController,
+                        onChanged: (value) {
+                          setState(() {
+                            _searchQuery = value;
+                          });
+                        },
+                        decoration: InputDecoration(
+                          hintText: "Tìm kiếm tên lớp...",
+                          prefixIcon: const Icon(Icons.search, color: Color(0xFF1E3C72)),
+                          filled: true,
+                          fillColor: Colors.white,
+                          contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide.none,
+                          ),
+                          suffixIcon: _searchQuery.isNotEmpty
+                              ? IconButton(
+                                  icon: const Icon(Icons.clear, color: Colors.grey),
+                                  onPressed: () {
+                                    _searchController.clear();
+                                    setState(() {
+                                      _searchQuery = '';
+                                    });
+                                  },
+                                )
+                              : null,
+                        ),
+                      ),
+                    ),
+
+                    // Danh sách lớp
+                    Expanded(
+                      child: filteredClasses.isEmpty
+                          ? const Center(child: Text("Không tìm thấy kết quả nào."))
+                          : ListView.builder(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                              itemCount: filteredClasses.length,
+                              itemBuilder: (context, index) {
+                                return _buildClassCard(context, filteredClasses[index]);
+                              },
+                            ),
+                    ),
+                  ],
+                );
+              }
+
+              return const SizedBox.shrink();
+            },
+          ),
+        );
+      }
+    );
+  }
+
+  Widget _buildClassCard(BuildContext context, LopHoc lop) {
     final dateFormat = DateFormat('dd/MM/yyyy');
     bool isOpen = lop.allowDangKy;
 
@@ -98,7 +198,6 @@ class _ClassListScreenState extends State<ClassListScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header of the card
           Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
@@ -118,10 +217,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
               ],
             ),
           ),
-
           const Divider(height: 1),
-
-          // Details section
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -134,7 +230,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
                 const SizedBox(height: 12),
                 _buildDetailRow(
                   Icons.people_outline,
-                  "Số lượng đăng ký",
+                  "Số lượng",
                   "${lop.soHocVienDangKy} / ${lop.siSoToiDa} học viên",
                 ),
                 const SizedBox(height: 12),
@@ -147,8 +243,6 @@ class _ClassListScreenState extends State<ClassListScreen> {
               ],
             ),
           ),
-
-          // Action Button - UPDATED HERE
           Padding(
             padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
             child: SizedBox(
@@ -156,18 +250,15 @@ class _ClassListScreenState extends State<ClassListScreen> {
               height: 48,
               child: ElevatedButton(
                 onPressed: () async {
-                  // Navigate to details screen and wait for result
                   final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          ClassDetailsScreen(idLop: lop.idLop),
+                      builder: (context) => ClassDetailsScreen(idLop: lop.idLop),
                     ),
                   );
 
-                  // If the user registered successfully, refresh this list to update seat counts
-                  if (result == true) {
-                    _loadClasses();
+                  if (result == true && context.mounted) {
+                    context.read<ClassBloc>().add(FetchAvailableClasses(idHocVien: currentStudentId!));
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -178,10 +269,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
                 ),
                 child: const Text(
                   "XEM CHI TIẾT",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               ),
             ),
@@ -195,9 +283,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: isOpen
-            ? Colors.green.withOpacity(0.1)
-            : Colors.red.withOpacity(0.1),
+        color: isOpen ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
@@ -211,12 +297,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
     );
   }
 
-  Widget _buildDetailRow(
-    IconData icon,
-    String label,
-    String value, {
-    Color? valueColor,
-  }) {
+  Widget _buildDetailRow(IconData icon, String label, String value, {Color? valueColor}) {
     return Row(
       children: [
         Icon(icon, size: 20, color: Colors.grey[600]),
@@ -238,36 +319,30 @@ class _ClassListScreenState extends State<ClassListScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.folder_open, size: 80, color: Colors.grey[300]),
+          Icon(Icons.check_circle_outline, size: 80, color: Colors.green[300]),
           const SizedBox(height: 16),
-          const Text("Hiện tại không có lớp học nào."),
+          const Text("Bạn đã đăng ký hết các lớp hiện có!"),
         ],
       ),
     );
   }
 
-  Widget _buildErrorState(String error) {
+  Widget _buildErrorState(BuildContext context, String error) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 60, color: Colors.redAccent),
-            const SizedBox(height: 16),
-            const Text("Rất tiếc! Đã có lỗi xảy ra."),
-            Text(
-              error,
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _loadClasses,
-              child: const Text("Thử lại"),
-            ),
-          ],
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.error_outline, size: 60, color: Colors.redAccent),
+          const SizedBox(height: 16),
+          const Text("Rất tiếc! Đã có lỗi xảy ra."),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              context.read<ClassBloc>().add(FetchAvailableClasses(idHocVien: currentStudentId!));
+            },
+            child: const Text("Thử lại"),
+          ),
+        ],
       ),
     );
   }
