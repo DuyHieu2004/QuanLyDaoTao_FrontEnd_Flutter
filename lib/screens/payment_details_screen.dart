@@ -90,6 +90,18 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
+          if (snapshot.hasError) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  "Lỗi: ${snapshot.error}",
+                  style: const TextStyle(color: Colors.red),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+          }
           if (!snapshot.hasData || snapshot.data == null) {
             return const Center(
               child: Text("Không tìm thấy hóa đơn thanh toán cho đăng ký này."),
@@ -99,7 +111,8 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
           final payment = snapshot.data!;
           final isPaid =
               payment.trangThaiThanhToan?.toLowerCase() == 'đã thanh toán' ||
-              payment.trangThaiThanhToan?.toLowerCase() == 'paid';
+              payment.trangThaiThanhToan?.toLowerCase() == 'paid' ||
+              payment.trangThaiThanhToan?.toLowerCase() == 'đã';
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(20),

@@ -23,9 +23,9 @@ class ThanhToanModel {
 
   factory ThanhToanModel.fromJson(Map<String, dynamic> json) {
     return ThanhToanModel(
-      idThanhToan: json['idThanhToan'] ?? 0,
-      idDangKy: json['idDangKy'] ?? 0,
-      soTien: (json['soTien'] ?? 0).toDouble(),
+      idThanhToan: int.tryParse((json['idThanhToan'] ?? 0).toString()) ?? 0,
+      idDangKy: int.tryParse((json['idDangKy'] ?? 0).toString()) ?? 0,
+      soTien: double.tryParse((json['soTien'] ?? 0).toString()) ?? 0.0,
       hinhThucThanhToan: json['hinhThucThanhToan'],
       trangThaiThanhToan: json['trangThaiThanhToan'],
       ngayTao: json['ngayTao'] != null ? DateTime.parse(json['ngayTao']) : null,

@@ -74,6 +74,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         backgroundColor: const Color(0xFF1E3C72),
         elevation: 0,
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.white),
+            onPressed: _handleLogout,
+            tooltip: 'Đăng xuất',
+          )
+        ],
       ),
       body: FutureBuilder<Map<String, dynamic>?>(
         future: _profileFuture,
@@ -87,7 +94,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
           
           final userInfo = snapshot.data;
           if (userInfo == null) {
-            return const Center(child: Text("Không tìm thấy hồ sơ cá nhân."));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Không tìm thấy dữ liệu hồ sơ cá nhân trên hệ thống."),
+                  const SizedBox(height: 20),
+                  ElevatedButton.icon(
+                    onPressed: _handleLogout,
+                    icon: const Icon(Icons.logout),
+                    label: const Text("Đăng xuất ngay"),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+                  )
+                ],
+              ),
+            );
           }
 
           final role = userInfo['role'] ?? 'Học viên';

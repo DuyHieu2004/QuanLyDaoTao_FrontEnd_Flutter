@@ -179,7 +179,8 @@ class _MyRegistrationsScreenState extends State<MyRegistrationsScreen> {
     final fee = (reg['khoaHocInfo']?['hocPhi'] ?? 0).toDouble();
     final status = reg['trangThaiThanhToan'] ?? 'Chưa thanh toán';
     final isPaid = status.toString().toLowerCase() == 'đã thanh toán' ||
-                   status.toString().toLowerCase() == 'paid';
+                   status.toString().toLowerCase() == 'paid' ||
+                   status.toString().toLowerCase() == 'đã';
     final regDate = reg['ngayDangKy'] != null ? DateTime.parse(reg['ngayDangKy']) : null;
 
     return Card(
