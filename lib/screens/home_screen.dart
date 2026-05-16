@@ -96,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
         index: _selectedIndex,
         children: [
           _buildDashboard(),
-          const Center(child: Text('Lịch học & Lớp học')),
+          const ClassListScreen(),
           const Center(child: Text('Thông báo')),
           const ProfileScreen(),
         ],

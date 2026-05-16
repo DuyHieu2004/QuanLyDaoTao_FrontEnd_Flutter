@@ -24,10 +24,10 @@ class PaymentService {
       if (response.statusCode == 200) {
         return ThanhToanModel.fromJson(jsonDecode(response.body));
       }
-      return null;
+      throw Exception('Lỗi máy chủ (${response.statusCode}): ${response.body}');
     } catch (e) {
       print("Error fetching payment info: $e");
-      return null;
+      throw Exception('Không thể tải thông tin thanh toán: $e');
     }
   }
 

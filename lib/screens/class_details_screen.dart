@@ -86,11 +86,10 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
       
       Navigator.pop(context, true); // Return true to refresh the previous list
     } else {
+      String errMsg = result['message'] ?? 'Đăng ký thất bại. Lớp học có thể đã đầy hoặc đã đăng ký.';
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Đăng ký thất bại. Lớp học có thể đã đầy hoặc đã đăng ký.',
-          ),
+        SnackBar(
+          content: Text(errMsg),
           backgroundColor: Colors.red,
         ),
       );

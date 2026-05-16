@@ -55,15 +55,24 @@ class RegistrationService {
           'idDangKy': data['idDangKy'] ?? 0,
         };
       } else {
+        String msg = 'Đăng ký thất bại.';
+        try {
+          final data = jsonDecode(response.body);
+          if (data['message'] != null) {
+            msg = data['message'];
+          }
+        } catch (e) {}
         print("Registration failed: ${response.body}");
         return {
           'success': false,
+          'message': msg,
         };
       }
     } catch (e) {
       print("Connection error during registration: $e");
       return {
         'success': false,
+        'message': 'Lỗi kết nối tới máy chủ.',
       };
     }
   }
