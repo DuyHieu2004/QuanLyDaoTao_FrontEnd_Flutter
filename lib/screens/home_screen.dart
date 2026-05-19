@@ -96,8 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
         index: _selectedIndex,
         children: [
           _buildDashboard(),
-          const ClassListScreen(),
-          const Center(child: Text('Thông báo')),
+          isTeacher ? const InstructorScheduleScreen() : const ClassListScreen(),
           const ProfileScreen(),
         ],
       ),
@@ -114,10 +113,6 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(isTeacher ? Icons.assignment_ind : Icons.class_outlined),
             label: isTeacher ? 'Dạy học' : 'Học tập',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_none),
-            label: 'Cảnh báo',
           ),
           const BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
@@ -258,9 +253,9 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
         _buildMenuCard(
-          'Chấm điểm (Kết quả)',
-          Icons.edit_note,
-          Colors.redAccent,
+          'Danh sách học viên',
+          Icons.people_alt,
+          Colors.teal,
           () {
             Navigator.push(
               context,
@@ -273,11 +268,6 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           },
         ),
-        _buildMenuCard('Giám thị thi', Icons.fact_check, Colors.deepPurple, () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Mô-đun giám thị thi sắp ra mắt!')),
-          );
-        }),
         _buildMenuCard(
           'Chi phí giảng dạy',
           Icons.payments_outlined,
@@ -289,13 +279,6 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           },
         ),
-        _buildMenuCard('Thống kê học viên', Icons.analytics, Colors.blue, () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Mô-đun thống kê học viên sắp ra mắt!'),
-            ),
-          );
-        }),
       ],
     );
   }
