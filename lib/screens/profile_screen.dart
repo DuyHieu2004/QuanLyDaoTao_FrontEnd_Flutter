@@ -134,7 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildHeader(Map<String, dynamic> userInfo) {
     return Container(
       width: double.infinity,
-      color: const Color(0xFF1E3C72),
+      color: Colors.transparent,
       padding: const EdgeInsets.only(bottom: 30, top: 10),
       child: Column(
         children: [
