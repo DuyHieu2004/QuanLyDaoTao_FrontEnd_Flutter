@@ -45,10 +45,10 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
       appBar: AppBar(
         title: const Text(
           "Lịch giảng dạy",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
         ),
-        backgroundColor: const Color(0xFF1E3C72),
-        iconTheme: const IconThemeData(color: Colors.white),
+        
+        
       ),
       body: Column(
         children: [

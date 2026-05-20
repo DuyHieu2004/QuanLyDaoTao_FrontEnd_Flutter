@@ -100,4 +100,27 @@ class RegistrationService {
       return [];
     }
   }
+
+  Future<List<dynamic>> getMyTimetable() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('jwt_token');
+
+    try {
+      final response = await http.get(
+        Uri.parse('${ApiConstants.dangKyEndpoint}/my-timetable'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      }
+      return [];
+    } catch (e) {
+      print("Error fetching timetable: $e");
+      return [];
+    }
+  }
 }

@@ -69,9 +69,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: const Text(
           'Hồ sơ cá nhân',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: const Color(0xFF1E3C72),
+        
         elevation: 0,
         centerTitle: true,
         actions: [
@@ -145,7 +145,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             child: const CircleAvatar(
               radius: 50,
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.transparent,
               child: Icon(Icons.person, size: 50, color: Color(0xFF1E3C72)),
             ),
           ),
@@ -155,7 +155,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: Colors.black,
             ),
           ),
           const SizedBox(height: 5),
@@ -163,7 +163,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             userInfo["email"] ?? "Chưa cập nhật",
             style: const TextStyle(
               fontSize: 14,
-              color: Colors.white70,
+              color: Colors.black87,
             ),
           ),
           const SizedBox(height: 5),
@@ -175,7 +175,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             child: Text(
               userInfo["role"] ?? "Unknown",
-              style: const TextStyle(color: Colors.white, fontSize: 12),
+              style: const TextStyle(color: Colors.black, fontSize: 12),
             ),
           )
         ],

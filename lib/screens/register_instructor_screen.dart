@@ -81,14 +81,14 @@ class _RegisterInstructorScreenState extends State<RegisterInstructorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text(
           'Đăng ký giảng viên',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.black),
         ),
-        backgroundColor: const Color(0xFF1E3C72),
-        iconTheme: const IconThemeData(color: Colors.white),
+        
+        
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -171,7 +171,7 @@ class _RegisterInstructorScreenState extends State<RegisterInstructorScreen> {
                       child: ElevatedButton(
                         onPressed: _isLoading ? null : _submitForm,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF1E3C72),
+                          
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -181,7 +181,7 @@ class _RegisterInstructorScreenState extends State<RegisterInstructorScreen> {
                             : const Text(
                                 'GỬI YÊU CẦU ĐĂNG KÝ',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: Colors.black,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),

@@ -24,14 +24,14 @@ class _InstructorRemunerationScreenState extends State<InstructorRemunerationScr
     final formatCurrency = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text(
           "Chi phí thù lao",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
         ),
-        backgroundColor: const Color(0xFF1E3C72),
-        iconTheme: const IconThemeData(color: Colors.white),
+        
+        
       ),
       body: FutureBuilder<Map<String, dynamic>?>(
         future: _remunerationFuture,
@@ -76,13 +76,13 @@ class _InstructorRemunerationScreenState extends State<InstructorRemunerationScr
                       children: [
                         const Text(
                           "TỔNG THÙ LAO DỰ KIẾN",
-                          style: TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.bold),
+                          style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
                         Text(
                           formatCurrency.format(tongThuLao),
                           style: const TextStyle(
-                            color: Colors.white,
+                            color: Colors.black,
                             fontSize: 36,
                             fontWeight: FontWeight.bold,
                           ),
@@ -90,7 +90,7 @@ class _InstructorRemunerationScreenState extends State<InstructorRemunerationScr
                         const SizedBox(height: 10),
                         Text(
                           "Giảng viên: $hoTen",
-                          style: const TextStyle(color: Colors.white, fontSize: 16),
+                          style: const TextStyle(color: Colors.black, fontSize: 16),
                         ),
                       ],
                     ),
