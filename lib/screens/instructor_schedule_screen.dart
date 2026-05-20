@@ -6,13 +6,14 @@ class InstructorScheduleScreen extends StatefulWidget {
   const InstructorScheduleScreen({super.key});
 
   @override
-  State<InstructorScheduleScreen> createState() => _InstructorScheduleScreenState();
+  State<InstructorScheduleScreen> createState() =>
+      _InstructorScheduleScreenState();
 }
 
 class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
   final InstructorService _instructorService = InstructorService();
   late Future<List<dynamic>> _scheduleFuture;
-  
+
   DateTime _currentDate = DateTime.now();
   List<DateTime> _weekDates = [];
 
@@ -25,8 +26,13 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
 
   void _calculateWeekDates() {
     int currentWeekday = _currentDate.weekday; // 1 = Monday, 7 = Sunday
-    DateTime startOfWeek = _currentDate.subtract(Duration(days: currentWeekday - 1));
-    _weekDates = List.generate(7, (index) => startOfWeek.add(Duration(days: index)));
+    DateTime startOfWeek = _currentDate.subtract(
+      Duration(days: currentWeekday - 1),
+    );
+    _weekDates = List.generate(
+      7,
+      (index) => startOfWeek.add(Duration(days: index)),
+    );
   }
 
   void _changeWeek(int offsetDays) {
@@ -39,7 +45,7 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat('dd/MM/yyyy');
-    
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
@@ -47,8 +53,6 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
           "Lịch giảng dạy",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
         ),
-        
-        
       ),
       body: Column(
         children: [
@@ -66,7 +70,11 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
                 ),
                 Text(
                   "Tuần ${dateFormat.format(_weekDates.first)} - ${dateFormat.format(_weekDates.last)}",
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF1E3C72)),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Color(0xFF1E3C72),
+                  ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.arrow_forward_ios, size: 18),
@@ -85,11 +93,16 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (snapshot.hasError) {
-                  return Center(child: Text("Lỗi: ${snapshot.error}", style: const TextStyle(color: Colors.red)));
+                  return Center(
+                    child: Text(
+                      "Lỗi: ${snapshot.error}",
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  );
                 }
-                
+
                 final scheduleList = snapshot.data ?? [];
-                
+
                 // Lọc dữ liệu cho tuần hiện tại
                 // scheduleList chứa Ngay, CaHoc, ...
                 Map<String, Map<int, List<dynamic>>> weekData = {};
@@ -103,7 +116,8 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
                       DateTime itemDate = DateTime.parse(item['ngay']);
                       String dateKey = dateFormat.format(itemDate);
                       if (weekData.containsKey(dateKey)) {
-                        int caHoc = item['caHoc'] ?? 1; // 1: Sáng, 2: Chiều, 3: Tối
+                        int caHoc =
+                            item['caHoc'] ?? 1; // 1: Sáng, 2: Chiều, 3: Tối
                         if (caHoc >= 1 && caHoc <= 3) {
                           weekData[dateKey]![caHoc]!.add(item);
                         }
@@ -125,8 +139,12 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
                           color: Colors.white,
                           border: Border.all(color: Colors.grey.shade300),
                           boxShadow: [
-                            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5, offset: const Offset(0, 2))
-                          ]
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 5,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                         ),
                         child: Table(
                           border: TableBorder.all(color: Colors.grey.shade300),
@@ -143,24 +161,55 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
                           children: [
                             // Header Row
                             TableRow(
-                              decoration: const BoxDecoration(color: Color(0xFFF0F4F8)),
+                              decoration: const BoxDecoration(
+                                color: Color(0xFFF0F4F8),
+                              ),
                               children: [
                                 _buildHeaderCell("Ca học"),
-                                _buildHeaderCell("Thứ 2\n${dateFormat.format(_weekDates[0])}"),
-                                _buildHeaderCell("Thứ 3\n${dateFormat.format(_weekDates[1])}"),
-                                _buildHeaderCell("Thứ 4\n${dateFormat.format(_weekDates[2])}"),
-                                _buildHeaderCell("Thứ 5\n${dateFormat.format(_weekDates[3])}"),
-                                _buildHeaderCell("Thứ 6\n${dateFormat.format(_weekDates[4])}"),
-                                _buildHeaderCell("Thứ 7\n${dateFormat.format(_weekDates[5])}"),
-                                _buildHeaderCell("Chủ nhật\n${dateFormat.format(_weekDates[6])}"),
+                                _buildHeaderCell(
+                                  "Thứ 2\n${dateFormat.format(_weekDates[0])}",
+                                ),
+                                _buildHeaderCell(
+                                  "Thứ 3\n${dateFormat.format(_weekDates[1])}",
+                                ),
+                                _buildHeaderCell(
+                                  "Thứ 4\n${dateFormat.format(_weekDates[2])}",
+                                ),
+                                _buildHeaderCell(
+                                  "Thứ 5\n${dateFormat.format(_weekDates[3])}",
+                                ),
+                                _buildHeaderCell(
+                                  "Thứ 6\n${dateFormat.format(_weekDates[4])}",
+                                ),
+                                _buildHeaderCell(
+                                  "Thứ 7\n${dateFormat.format(_weekDates[5])}",
+                                ),
+                                _buildHeaderCell(
+                                  "Chủ nhật\n${dateFormat.format(_weekDates[6])}",
+                                ),
                               ],
                             ),
                             // Sáng Row
-                            _buildShiftRow("Sáng\n(Ca 1)", 1, weekData, dateFormat),
+                            _buildShiftRow(
+                              "Sáng\n(Ca 1)",
+                              1,
+                              weekData,
+                              dateFormat,
+                            ),
                             // Chiều Row
-                            _buildShiftRow("Chiều\n(Ca 2)", 2, weekData, dateFormat),
+                            _buildShiftRow(
+                              "Chiều\n(Ca 2)",
+                              2,
+                              weekData,
+                              dateFormat,
+                            ),
                             // Tối Row
-                            _buildShiftRow("Tối\n(Ca 3)", 3, weekData, dateFormat),
+                            _buildShiftRow(
+                              "Tối\n(Ca 3)",
+                              3,
+                              weekData,
+                              dateFormat,
+                            ),
                           ],
                         ),
                       ),
@@ -181,12 +230,21 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
       child: Text(
         text,
         textAlign: TextAlign.center,
-        style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1E3C72), fontSize: 13),
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF1E3C72),
+          fontSize: 13,
+        ),
       ),
     );
   }
 
-  TableRow _buildShiftRow(String shiftName, int shiftIndex, Map<String, Map<int, List<dynamic>>> weekData, DateFormat dateFormat) {
+  TableRow _buildShiftRow(
+    String shiftName,
+    int shiftIndex,
+    Map<String, Map<int, List<dynamic>>> weekData,
+    DateFormat dateFormat,
+  ) {
     return TableRow(
       children: [
         // Cột tiêu đề Ca học
@@ -197,27 +255,31 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
           child: Text(
             shiftName,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black87),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+              color: Colors.black87,
+            ),
           ),
         ),
         // 7 ngày trong tuần
         ...List.generate(7, (dayIndex) {
           String dateKey = dateFormat.format(_weekDates[dayIndex]);
           List<dynamic> classes = weekData[dateKey]?[shiftIndex] ?? [];
-          
+
           return Container(
             height: 150,
             alignment: Alignment.topLeft,
             padding: const EdgeInsets.all(4),
-            child: classes.isEmpty 
-              ? const SizedBox.shrink()
-              : SingleChildScrollView(
-                  child: Column(
-                    children: classes.map((c) => _buildClassCard(c)).toList(),
+            child: classes.isEmpty
+                ? const SizedBox.shrink()
+                : SingleChildScrollView(
+                    child: Column(
+                      children: classes.map((c) => _buildClassCard(c)).toList(),
+                    ),
                   ),
-                ),
           );
-        })
+        }),
       ],
     );
   }
@@ -225,8 +287,9 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
   Widget _buildClassCard(dynamic data) {
     String timeRange = "";
     if (data['gioBatDau'] != null && data['gioKetThuc'] != null) {
-       // Format time from 15:00:00 to 15:00
-       timeRange = "${data['gioBatDau'].substring(0,5)} - ${data['gioKetThuc'].substring(0,5)}";
+      // Format time from 15:00:00 to 15:00
+      timeRange =
+          "${data['gioBatDau'].substring(0, 5)} - ${data['gioKetThuc'].substring(0, 5)}";
     }
 
     return Container(
@@ -244,16 +307,32 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
         children: [
           Text(
             data['tenKhoaHoc'] ?? 'Khoa học',
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Color(0xFF1565C0)),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+              color: Color(0xFF1565C0),
+            ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 4),
-          Text("Lớp: ${data['tenLop'] ?? ''}", style: const TextStyle(fontSize: 11, color: Colors.black87)),
-          Text("Giờ: $timeRange", style: const TextStyle(fontSize: 11, color: Colors.black87)),
-          Text("Phòng: ${data['diaDiem'] ?? 'Đang cập nhật'}", style: const TextStyle(fontSize: 11, color: Colors.black87)),
-          if (data['hoTenGv'] != null) 
-            Text("GV: ${data['hoTenGv']}", style: const TextStyle(fontSize: 11, color: Colors.black54)),
+          Text(
+            "Lớp: ${data['tenLop'] ?? ''}",
+            style: const TextStyle(fontSize: 11, color: Colors.black87),
+          ),
+          Text(
+            "Giờ: $timeRange",
+            style: const TextStyle(fontSize: 11, color: Colors.black87),
+          ),
+          Text(
+            "Phòng: ${data['diaDiem'] ?? 'Đang cập nhật'}",
+            style: const TextStyle(fontSize: 11, color: Colors.black87),
+          ),
+          if (data['hoTenGv'] != null)
+            Text(
+              "GV: ${data['hoTenGv']}",
+              style: const TextStyle(fontSize: 11, color: Colors.black54),
+            ),
         ],
       ),
     );
