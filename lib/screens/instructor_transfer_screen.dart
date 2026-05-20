@@ -87,7 +87,7 @@ class _InstructorTransferScreenState extends State<InstructorTransferScreen> {
             style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
             child: const Text(
               'Phê duyệt',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.black),
             ),
           ),
         ],
@@ -142,14 +142,14 @@ class _InstructorTransferScreenState extends State<InstructorTransferScreen> {
     final dateFormat = DateFormat('dd/MM/yyyy HH:mm');
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text(
           "Chuyển giao chờ xử lý",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: const Color(0xFF1E3C72),
-        iconTheme: const IconThemeData(color: Colors.white),
+        
+        
       ),
       body: RefreshIndicator(
         onRefresh: () async => _loadPendingRequests(),
@@ -255,7 +255,7 @@ class _InstructorTransferScreenState extends State<InstructorTransferScreen> {
                                 ),
                                 child: const Text(
                                   "PHÊ DUYỆT",
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(color: Colors.black),
                                 ),
                               ),
                             ),

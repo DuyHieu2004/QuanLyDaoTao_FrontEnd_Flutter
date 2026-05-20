@@ -35,13 +35,13 @@ class _CourseListScreenState extends State<CourseListScreen> {
     final formatCurrency = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text(
           "Danh mục khóa học",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: const Color(0xFF1E3C72),
+        
         centerTitle: true,
       ),
       body: RefreshIndicator(

@@ -1,0 +1,304 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import '../services/registration_service.dart';
+
+class StudentTimetableTab extends StatefulWidget {
+  const StudentTimetableTab({super.key});
+
+  @override
+  State<StudentTimetableTab> createState() => _StudentTimetableTabState();
+}
+
+class _StudentTimetableTabState extends State<StudentTimetableTab> {
+  final RegistrationService _registrationService = RegistrationService();
+  late Future<List<dynamic>> _timetableFuture;
+  
+  DateTime _currentDate = DateTime.now();
+  List<DateTime> _weekDates = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _calculateWeekDates();
+    _timetableFuture = _registrationService.getMyTimetable();
+  }
+
+  void _calculateWeekDates() {
+    int currentWeekday = _currentDate.weekday; // 1 = Monday, 7 = Sunday
+    DateTime startOfWeek = _currentDate.subtract(Duration(days: currentWeekday - 1));
+    _weekDates = List.generate(7, (index) => startOfWeek.add(Duration(days: index)));
+  }
+
+  void _changeWeek(int offsetDays) {
+    setState(() {
+      _currentDate = _currentDate.add(Duration(days: offsetDays));
+      _calculateWeekDates();
+    });
+  }
+
+  void _showEventDetails(dynamic data) {
+    String timeRange = "";
+    if (data['gioBatDau'] != null && data['gioKetThuc'] != null) {
+       timeRange = "${data['gioBatDau'].substring(0,5)} - ${data['gioKetThuc'].substring(0,5)}";
+    }
+    
+    bool isExam = data['eventType'] == 'Thi';
+    Color themeColor = isExam ? Colors.orange : const Color(0xFF1565C0);
+    IconData icon = isExam ? Icons.event_available : Icons.menu_book;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          title: Row(
+            children: [
+              Icon(icon, color: themeColor),
+              const SizedBox(width: 10),
+              Text(isExam ? "Lịch Thi" : "Lịch Học", style: TextStyle(color: themeColor, fontWeight: FontWeight.bold)),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Môn học: ${data['tenKhoaHoc'] ?? 'N/A'}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              const SizedBox(height: 10),
+              Text("Lớp: ${data['tenLop'] ?? 'N/A'}"),
+              const SizedBox(height: 8),
+              Text("Thời gian: $timeRange"),
+              const SizedBox(height: 8),
+              Text("Địa điểm/Phòng: ${data['diaDiem'] ?? 'N/A'}"),
+              if (data['loai'] != null) ...[
+                const SizedBox(height: 8),
+                Text("Loại: ${data['loai']}"),
+              ]
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text("Đóng"),
+            )
+          ],
+        );
+      }
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dateFormat = DateFormat('dd/MM/yyyy');
+    
+    return Column(
+      children: [
+        // Điều hướng tuần
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+          color: Colors.white,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                icon: Icon(Icons.arrow_back_ios, size: 18),
+                onPressed: () => _changeWeek(-7),
+                tooltip: 'Tuần trước',
+              ),
+              Text(
+                "Tuần ${dateFormat.format(_weekDates.first)} - ${dateFormat.format(_weekDates.last)}",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.amber),
+              ),
+              IconButton(
+                icon: Icon(Icons.arrow_forward_ios, size: 18),
+                onPressed: () => _changeWeek(7),
+                tooltip: 'Tuần sau',
+              ),
+            ],
+          ),
+        ),
+        const Divider(height: 1, thickness: 1),
+        Expanded(
+          child: FutureBuilder<List<dynamic>>(
+            future: _timetableFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasError) {
+                return Center(child: Text("Lỗi: ${snapshot.error}", style: TextStyle(color: Colors.red)));
+              }
+              
+              final scheduleList = snapshot.data ?? [];
+              
+              Map<String, Map<int, List<dynamic>>> weekData = {};
+              for (var date in _weekDates) {
+                weekData[dateFormat.format(date)] = {1: [], 2: [], 3: []};
+              }
+
+              for (var item in scheduleList) {
+                if (item['ngay'] != null) {
+                  try {
+                    DateTime itemDate = DateTime.parse(item['ngay']);
+                    String dateKey = dateFormat.format(itemDate);
+                    if (weekData.containsKey(dateKey)) {
+                      int caHoc = item['caHoc'] ?? 1; // 1: Sáng, 2: Chiều, 3: Tối
+                      if (caHoc >= 1 && caHoc <= 3) {
+                        weekData[dateKey]![caHoc]!.add(item);
+                      }
+                    }
+                  } catch (e) {
+                    print("Parse date error: $e");
+                  }
+                }
+              }
+
+              return SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: Colors.grey.shade300),
+                        boxShadow: [
+                          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5, offset: const Offset(0, 2))
+                        ]
+                      ),
+                      child: Table(
+                        border: TableBorder.all(color: Colors.grey.shade300),
+                        columnWidths: const {
+                          0: FixedColumnWidth(60.0), // Cột Ca học
+                          1: FixedColumnWidth(140.0), // T2
+                          2: FixedColumnWidth(140.0), // T3
+                          3: FixedColumnWidth(140.0), // T4
+                          4: FixedColumnWidth(140.0), // T5
+                          5: FixedColumnWidth(140.0), // T6
+                          6: FixedColumnWidth(140.0), // T7
+                          7: FixedColumnWidth(140.0), // CN
+                        },
+                        children: [
+                          // Header Row
+                          TableRow(
+                            decoration: const BoxDecoration(color: Color(0xFFF0F4F8)),
+                            children: [
+                              _buildHeaderCell("Ca học"),
+                              _buildHeaderCell("Thứ 2\n${dateFormat.format(_weekDates[0])}"),
+                              _buildHeaderCell("Thứ 3\n${dateFormat.format(_weekDates[1])}"),
+                              _buildHeaderCell("Thứ 4\n${dateFormat.format(_weekDates[2])}"),
+                              _buildHeaderCell("Thứ 5\n${dateFormat.format(_weekDates[3])}"),
+                              _buildHeaderCell("Thứ 6\n${dateFormat.format(_weekDates[4])}"),
+                              _buildHeaderCell("Thứ 7\n${dateFormat.format(_weekDates[5])}"),
+                              _buildHeaderCell("Chủ nhật\n${dateFormat.format(_weekDates[6])}"),
+                            ],
+                          ),
+                          // Sáng Row
+                          _buildShiftRow("Sáng\n(Ca 1)", 1, weekData, dateFormat),
+                          // Chiều Row
+                          _buildShiftRow("Chiều\n(Ca 2)", 2, weekData, dateFormat),
+                          // Tối Row
+                          _buildShiftRow("Tối\n(Ca 3)", 3, weekData, dateFormat),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHeaderCell(String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1E3C72), fontSize: 13),
+      ),
+    );
+  }
+
+  TableRow _buildShiftRow(String shiftName, int shiftIndex, Map<String, Map<int, List<dynamic>>> weekData, DateFormat dateFormat) {
+    return TableRow(
+      children: [
+        // Cột tiêu đề Ca học
+        Container(
+          height: 150, // Fixed minimum height for rows
+          color: const Color(0xFFFDFDFD),
+          alignment: Alignment.center,
+          child: Text(
+            shiftName,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black87),
+          ),
+        ),
+        // 7 ngày trong tuần
+        ...List.generate(7, (dayIndex) {
+          String dateKey = dateFormat.format(_weekDates[dayIndex]);
+          List<dynamic> events = weekData[dateKey]?[shiftIndex] ?? [];
+          
+          return Container(
+            height: 150,
+            alignment: Alignment.topLeft,
+            padding: const EdgeInsets.all(4),
+            child: events.isEmpty 
+              ? const SizedBox.shrink()
+              : SingleChildScrollView(
+                  child: Column(
+                    children: events.map((e) => _buildEventCard(e)).toList(),
+                  ),
+                ),
+          );
+        })
+      ],
+    );
+  }
+
+  Widget _buildEventCard(dynamic data) {
+    String timeRange = "";
+    if (data['gioBatDau'] != null && data['gioKetThuc'] != null) {
+       timeRange = "${data['gioBatDau'].substring(0,5)} - ${data['gioKetThuc'].substring(0,5)}";
+    }
+
+    bool isExam = data['eventType'] == 'Thi';
+    Color bgColor = isExam ? const Color(0xFFFFF3E0) : const Color(0xFFE3F2FD);
+    Color borderColor = isExam ? Colors.orange.shade200 : Colors.blue.shade200;
+    Color titleColor = isExam ? Colors.deepOrange : const Color(0xFF1565C0);
+    String typeLabel = isExam ? '[THI]' : '[HỌC]';
+
+    return GestureDetector(
+      onTap: () => _showEventDetails(data),
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.only(bottom: 6),
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(color: borderColor),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "$typeLabel ${data['tenKhoaHoc'] ?? 'N/A'}",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: titleColor),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 4),
+            Text("Lớp: ${data['tenLop'] ?? ''}", style: TextStyle(fontSize: 11, color: Colors.black87)),
+            Text("Giờ: $timeRange", style: TextStyle(fontSize: 11, color: Colors.black87)),
+            Text("Phòng: ${data['diaDiem'] ?? ''}", style: TextStyle(fontSize: 11, color: Colors.black87)),
+          ],
+        ),
+      ),
+    );
+  }
+}

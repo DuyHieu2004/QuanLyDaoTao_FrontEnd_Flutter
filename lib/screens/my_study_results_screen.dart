@@ -33,14 +33,14 @@ class _MyStudyResultsScreenState extends State<MyStudyResultsScreen> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        backgroundColor: Colors.grey[100],
+        backgroundColor: Colors.transparent,
         appBar: AppBar(
           title: const Text(
             "Kết quả & Lịch thi",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
           ),
-          backgroundColor: const Color(0xFF1E3C72),
-          iconTheme: const IconThemeData(color: Colors.white),
+          
+          
           bottom: const TabBar(
             labelColor: Colors.white,
             unselectedLabelColor: Colors.white70,
@@ -235,7 +235,7 @@ class _MyStudyResultsScreenState extends State<MyStudyResultsScreen> {
               child: ListTile(
                 contentPadding: const EdgeInsets.all(16),
                 leading: const CircleAvatar(
-                  backgroundColor: Color(0xFF1E3C72),
+                  
                   child: Icon(Icons.event, color: Colors.white),
                 ),
                 title: Text(className, style: const TextStyle(fontWeight: FontWeight.bold)),

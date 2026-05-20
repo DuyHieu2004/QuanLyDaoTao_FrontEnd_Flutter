@@ -33,14 +33,14 @@ class _MyRegistrationsScreenState extends State<MyRegistrationsScreen> {
       create: (context) => RegistrationBloc(registrationService: RegistrationService())
         ..add(FetchMyRegistrations()),
       child: Scaffold(
-        backgroundColor: Colors.grey[100],
+        backgroundColor: Colors.transparent,
         appBar: AppBar(
           title: const Text(
             "Đăng ký của tôi",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
-          backgroundColor: const Color(0xFF1E3C72),
-          iconTheme: const IconThemeData(color: Colors.white),
+          
+          
           elevation: 0,
         ),
         body: _buildBody(),
@@ -284,7 +284,7 @@ class _MyRegistrationsScreenState extends State<MyRegistrationsScreen> {
                   icon: const Icon(Icons.payment, color: Colors.white),
                   label: const Text(
                     "THANH TOÁN NGAY",
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,

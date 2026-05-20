@@ -42,14 +42,14 @@ class _StudyGradingScreenState extends State<StudyGradingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(
           widget.className,
-          style: const TextStyle(color: Colors.white, fontSize: 18),
+          style: const TextStyle(color: Colors.black, fontSize: 18),
         ),
-        backgroundColor: const Color(0xFF1E3C72),
-        iconTheme: const IconThemeData(color: Colors.white),
+        
+        
         actions: [
           IconButton(icon: const Icon(Icons.refresh), onPressed: _loadData),
         ],
@@ -84,7 +84,7 @@ class _StudyGradingScreenState extends State<StudyGradingScreen> {
                     const Text(
                       "Hiệu suất lớp",
                       style: TextStyle(
-                        color: Colors.white70,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -200,7 +200,7 @@ class _StudyGradingScreenState extends State<StudyGradingScreen> {
         Text(
           value,
           style: const TextStyle(
-            color: Colors.white,
+            color: Colors.black,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
@@ -208,7 +208,7 @@ class _StudyGradingScreenState extends State<StudyGradingScreen> {
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(color: Colors.white70, fontSize: 12),
+          style: const TextStyle(color: Colors.white, fontSize: 12),
         ),
       ],
     );

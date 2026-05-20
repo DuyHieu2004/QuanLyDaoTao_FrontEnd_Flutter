@@ -126,9 +126,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cập nhật hồ sơ', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        backgroundColor: const Color(0xFF1E3C72),
-        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text('Cập nhật hồ sơ', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+        
+        
         actions: [
           IconButton(
             icon: const Icon(Icons.check),
@@ -199,11 +199,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ElevatedButton(
                     onPressed: _saveProfile,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1E3C72),
+                      
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
-                    child: const Text('LƯU THAY ĐỔI', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                    child: const Text('LƯU THAY ĐỔI', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)),
                   )
                 ],
               ),

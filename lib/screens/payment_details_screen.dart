@@ -75,14 +75,14 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
     final formatCurrency = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text(
           "Chi tiết thanh toán",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: const Color(0xFF1E3C72),
-        iconTheme: const IconThemeData(color: Colors.white),
+        
+        
       ),
       body: FutureBuilder<ThanhToanModel?>(
         future: _paymentFuture,
@@ -276,7 +276,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                     child: ElevatedButton(
                       onPressed: _isProcessing ? null : _handleCheckout,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1E3C72),
+                        
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -288,7 +288,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                color: Colors.black,
                               ),
                             ),
                     ),

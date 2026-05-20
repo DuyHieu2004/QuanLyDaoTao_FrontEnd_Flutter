@@ -63,14 +63,14 @@ class _ClassListScreenState extends State<ClassListScreen> {
       create: (context) => ClassBloc(classService: ClassService())
         ..add(FetchAvailableClasses(idHocVien: currentStudentId!)),
       child: Scaffold(
-        backgroundColor: Colors.grey[100],
+        backgroundColor: Colors.transparent,
         appBar: AppBar(
           title: const Text(
             "Lớp học có sẵn",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
           ),
           centerTitle: true,
-          backgroundColor: const Color(0xFF1E3C72),
+          
           elevation: 0,
           actions: [
             Builder(
@@ -262,14 +262,14 @@ class _ClassListScreenState extends State<ClassListScreen> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1E3C72),
+                  
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 child: const Text(
                   "XEM CHI TIẾT",
-                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                 ),
               ),
             ),

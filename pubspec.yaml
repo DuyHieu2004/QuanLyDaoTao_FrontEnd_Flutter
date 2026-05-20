@@ -39,6 +39,8 @@ dependencies:
   intl: ^0.20.2
   flutter_bloc: ^9.1.1
   equatable: ^2.0.8
+  quickalert: ^1.1.0
+  fluttertoast: ^9.0.0
 
 dev_dependencies:
   flutter_test:

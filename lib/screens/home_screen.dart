@@ -91,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       body: IndexedStack(
         index: _selectedIndex,
         children: [
@@ -126,33 +126,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildDashboard() {
     return CustomScrollView(
       slivers: [
-        SliverAppBar(
-          expandedHeight: 150,
+        const SliverAppBar(
+          title: Text('Ứng dụng Đào Tạo'),
           pinned: true,
           automaticallyImplyLeading: false,
-          backgroundColor: const Color(0xFF1E3C72),
-          flexibleSpace: FlexibleSpaceBar(
-            title: Text(
-              isTeacher
-                  ? 'Bảng điều khiển giảng viên'
-                  : 'Bảng điều khiển học viên',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            background: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
-                ),
-              ),
-            ),
-          ),
-          actions: [
-            // THE DEVELOPER TOGGLE BUTTON HAS BEEN PERMANENTLY REMOVED FROM HERE
-          ],
         ),
         SliverToBoxAdapter(
           child: Padding(
@@ -160,11 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Hành động nhanh",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 // Show the correct grid based on their real role
                 isTeacher ? _buildTeacherGrid() : _buildStudentGrid(),
               ],

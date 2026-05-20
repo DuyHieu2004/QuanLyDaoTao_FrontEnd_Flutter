@@ -42,11 +42,11 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF1E3C72),
+              
             ),
             child: const Text(
               'Xác nhận',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.black),
             ),
           ),
         ],
@@ -99,14 +99,14 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text(
           "Thông tin lớp học",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.black),
         ),
-        backgroundColor: const Color(0xFF1E3C72),
-        iconTheme: const IconThemeData(color: Colors.white),
+        
+        
       ),
       body: FutureBuilder<LopHoc?>(
         future: _classDetailsFuture,
@@ -239,7 +239,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                         ? _handleRegistration
                         : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1E3C72),
+                      
                       disabledBackgroundColor: Colors.grey[300],
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
