@@ -65,7 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA), // Màu nền xám nhạt cho app
+      backgroundColor: Colors.transparent, // Cho phép hình nền gốc hiển thị
       appBar: AppBar(
         title: const Text(
           'Hồ sơ cá nhân',
