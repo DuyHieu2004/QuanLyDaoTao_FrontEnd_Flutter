@@ -111,7 +111,7 @@ class _StudentTimetableTabState extends State<StudentTimetableTab> {
     final dateFormat = DateFormat('dd/MM/yyyy');
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text(
           "Lịch học & Lịch thi",

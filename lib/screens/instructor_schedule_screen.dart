@@ -47,7 +47,7 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
     final dateFormat = DateFormat('dd/MM/yyyy');
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text(
           "Lịch giảng dạy",
