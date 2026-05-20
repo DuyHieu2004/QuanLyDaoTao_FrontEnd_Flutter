@@ -12,7 +12,7 @@ class StudentTimetableTab extends StatefulWidget {
 class _StudentTimetableTabState extends State<StudentTimetableTab> {
   final RegistrationService _registrationService = RegistrationService();
   late Future<List<dynamic>> _timetableFuture;
-  
+
   DateTime _currentDate = DateTime.now();
   List<DateTime> _weekDates = [];
 
@@ -25,8 +25,13 @@ class _StudentTimetableTabState extends State<StudentTimetableTab> {
 
   void _calculateWeekDates() {
     int currentWeekday = _currentDate.weekday; // 1 = Monday, 7 = Sunday
-    DateTime startOfWeek = _currentDate.subtract(Duration(days: currentWeekday - 1));
-    _weekDates = List.generate(7, (index) => startOfWeek.add(Duration(days: index)));
+    DateTime startOfWeek = _currentDate.subtract(
+      Duration(days: currentWeekday - 1),
+    );
+    _weekDates = List.generate(
+      7,
+      (index) => startOfWeek.add(Duration(days: index)),
+    );
   }
 
   void _changeWeek(int offsetDays) {
@@ -39,9 +44,10 @@ class _StudentTimetableTabState extends State<StudentTimetableTab> {
   void _showEventDetails(dynamic data) {
     String timeRange = "";
     if (data['gioBatDau'] != null && data['gioKetThuc'] != null) {
-       timeRange = "${data['gioBatDau'].substring(0,5)} - ${data['gioKetThuc'].substring(0,5)}";
+      timeRange =
+          "${data['gioBatDau'].substring(0, 5)} - ${data['gioKetThuc'].substring(0, 5)}";
     }
-    
+
     bool isExam = data['eventType'] == 'Thi';
     Color themeColor = isExam ? Colors.orange : const Color(0xFF1565C0);
     IconData icon = isExam ? Icons.event_available : Icons.menu_book;
@@ -50,19 +56,33 @@ class _StudentTimetableTabState extends State<StudentTimetableTab> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
           title: Row(
             children: [
               Icon(icon, color: themeColor),
               const SizedBox(width: 10),
-              Text(isExam ? "Lịch Thi" : "Lịch Học", style: TextStyle(color: themeColor, fontWeight: FontWeight.bold)),
+              Text(
+                isExam ? "Lịch Thi" : "Lịch Học",
+                style: TextStyle(
+                  color: themeColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ],
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Môn học: ${data['tenKhoaHoc'] ?? 'N/A'}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              Text(
+                "Môn học: ${data['tenKhoaHoc'] ?? 'N/A'}",
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
               const SizedBox(height: 10),
               Text("Lớp: ${data['tenLop'] ?? 'N/A'}"),
               const SizedBox(height: 8),
@@ -72,143 +92,197 @@ class _StudentTimetableTabState extends State<StudentTimetableTab> {
               if (data['loai'] != null) ...[
                 const SizedBox(height: 8),
                 Text("Loại: ${data['loai']}"),
-              ]
+              ],
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text("Đóng"),
-            )
+              child: const Text("Đóng"),
+            ),
           ],
         );
-      }
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat('dd/MM/yyyy');
-    
-    return Column(
-      children: [
-        // Điều hướng tuần
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-          color: Colors.white,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: Icon(Icons.arrow_back_ios, size: 18),
-                onPressed: () => _changeWeek(-7),
-                tooltip: 'Tuần trước',
-              ),
-              Text(
-                "Tuần ${dateFormat.format(_weekDates.first)} - ${dateFormat.format(_weekDates.last)}",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.amber),
-              ),
-              IconButton(
-                icon: Icon(Icons.arrow_forward_ios, size: 18),
-                onPressed: () => _changeWeek(7),
-                tooltip: 'Tuần sau',
-              ),
-            ],
-          ),
-        ),
-        const Divider(height: 1, thickness: 1),
-        Expanded(
-          child: FutureBuilder<List<dynamic>>(
-            future: _timetableFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (snapshot.hasError) {
-                return Center(child: Text("Lỗi: ${snapshot.error}", style: TextStyle(color: Colors.red)));
-              }
-              
-              final scheduleList = snapshot.data ?? [];
-              
-              Map<String, Map<int, List<dynamic>>> weekData = {};
-              for (var date in _weekDates) {
-                weekData[dateFormat.format(date)] = {1: [], 2: [], 3: []};
-              }
 
-              for (var item in scheduleList) {
-                if (item['ngay'] != null) {
-                  try {
-                    DateTime itemDate = DateTime.parse(item['ngay']);
-                    String dateKey = dateFormat.format(itemDate);
-                    if (weekData.containsKey(dateKey)) {
-                      int caHoc = item['caHoc'] ?? 1; // 1: Sáng, 2: Chiều, 3: Tối
-                      if (caHoc >= 1 && caHoc <= 3) {
-                        weekData[dateKey]![caHoc]!.add(item);
+    return Scaffold(
+      backgroundColor: Colors.grey[50],
+      appBar: AppBar(
+        title: const Text(
+          "Lịch học & Lịch thi",
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+      ),
+      body: Column(
+        children: [
+          // Điều hướng tuần
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+            color: Colors.white,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back_ios, size: 18),
+                  onPressed: () => _changeWeek(-7),
+                  tooltip: 'Tuần trước',
+                ),
+                Text(
+                  "Tuần ${dateFormat.format(_weekDates.first)} - ${dateFormat.format(_weekDates.last)}",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Colors.amber,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.arrow_forward_ios, size: 18),
+                  onPressed: () => _changeWeek(7),
+                  tooltip: 'Tuần sau',
+                ),
+              ],
+            ),
+          ),
+          const Divider(height: 1, thickness: 1),
+          Expanded(
+            child: FutureBuilder<List<dynamic>>(
+              future: _timetableFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text(
+                      "Lỗi: ${snapshot.error}",
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  );
+                }
+
+                final scheduleList = snapshot.data ?? [];
+
+                Map<String, Map<int, List<dynamic>>> weekData = {};
+                for (var date in _weekDates) {
+                  weekData[dateFormat.format(date)] = {1: [], 2: [], 3: []};
+                }
+
+                for (var item in scheduleList) {
+                  if (item['ngay'] != null) {
+                    try {
+                      DateTime itemDate = DateTime.parse(item['ngay']);
+                      String dateKey = dateFormat.format(itemDate);
+                      if (weekData.containsKey(dateKey)) {
+                        int caHoc =
+                            item['caHoc'] ?? 1; // 1: Sáng, 2: Chiều, 3: Tối
+                        if (caHoc >= 1 && caHoc <= 3) {
+                          weekData[dateKey]![caHoc]!.add(item);
+                        }
                       }
+                    } catch (e) {
+                      print("Parse date error: $e");
                     }
-                  } catch (e) {
-                    print("Parse date error: $e");
                   }
                 }
-              }
 
-              return SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.grey.shade300),
-                        boxShadow: [
-                          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5, offset: const Offset(0, 2))
-                        ]
-                      ),
-                      child: Table(
-                        border: TableBorder.all(color: Colors.grey.shade300),
-                        columnWidths: const {
-                          0: FixedColumnWidth(60.0), // Cột Ca học
-                          1: FixedColumnWidth(140.0), // T2
-                          2: FixedColumnWidth(140.0), // T3
-                          3: FixedColumnWidth(140.0), // T4
-                          4: FixedColumnWidth(140.0), // T5
-                          5: FixedColumnWidth(140.0), // T6
-                          6: FixedColumnWidth(140.0), // T7
-                          7: FixedColumnWidth(140.0), // CN
-                        },
-                        children: [
-                          // Header Row
-                          TableRow(
-                            decoration: const BoxDecoration(color: Color(0xFFF0F4F8)),
-                            children: [
-                              _buildHeaderCell("Ca học"),
-                              _buildHeaderCell("Thứ 2\n${dateFormat.format(_weekDates[0])}"),
-                              _buildHeaderCell("Thứ 3\n${dateFormat.format(_weekDates[1])}"),
-                              _buildHeaderCell("Thứ 4\n${dateFormat.format(_weekDates[2])}"),
-                              _buildHeaderCell("Thứ 5\n${dateFormat.format(_weekDates[3])}"),
-                              _buildHeaderCell("Thứ 6\n${dateFormat.format(_weekDates[4])}"),
-                              _buildHeaderCell("Thứ 7\n${dateFormat.format(_weekDates[5])}"),
-                              _buildHeaderCell("Chủ nhật\n${dateFormat.format(_weekDates[6])}"),
-                            ],
-                          ),
-                          // Sáng Row
-                          _buildShiftRow("Sáng\n(Ca 1)", 1, weekData, dateFormat),
-                          // Chiều Row
-                          _buildShiftRow("Chiều\n(Ca 2)", 2, weekData, dateFormat),
-                          // Tối Row
-                          _buildShiftRow("Tối\n(Ca 3)", 3, weekData, dateFormat),
-                        ],
+                return SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.grey.shade300),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 5,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Table(
+                          border: TableBorder.all(color: Colors.grey.shade300),
+                          columnWidths: const {
+                            0: FixedColumnWidth(60.0), // Cột Ca học
+                            1: FixedColumnWidth(140.0), // T2
+                            2: FixedColumnWidth(140.0), // T3
+                            3: FixedColumnWidth(140.0), // T4
+                            4: FixedColumnWidth(140.0), // T5
+                            5: FixedColumnWidth(140.0), // T6
+                            6: FixedColumnWidth(140.0), // T7
+                            7: FixedColumnWidth(140.0), // CN
+                          },
+                          children: [
+                            // Header Row
+                            TableRow(
+                              decoration: const BoxDecoration(
+                                color: Color(0xFFF0F4F8),
+                              ),
+                              children: [
+                                _buildHeaderCell("Ca học"),
+                                _buildHeaderCell(
+                                  "Thứ 2\n${dateFormat.format(_weekDates[0])}",
+                                ),
+                                _buildHeaderCell(
+                                  "Thứ 3\n${dateFormat.format(_weekDates[1])}",
+                                ),
+                                _buildHeaderCell(
+                                  "Thứ 4\n${dateFormat.format(_weekDates[2])}",
+                                ),
+                                _buildHeaderCell(
+                                  "Thứ 5\n${dateFormat.format(_weekDates[3])}",
+                                ),
+                                _buildHeaderCell(
+                                  "Thứ 6\n${dateFormat.format(_weekDates[4])}",
+                                ),
+                                _buildHeaderCell(
+                                  "Thứ 7\n${dateFormat.format(_weekDates[5])}",
+                                ),
+                                _buildHeaderCell(
+                                  "Chủ nhật\n${dateFormat.format(_weekDates[6])}",
+                                ),
+                              ],
+                            ),
+                            // Sáng Row
+                            _buildShiftRow(
+                              "Sáng\n(Ca 1)",
+                              1,
+                              weekData,
+                              dateFormat,
+                            ),
+                            // Chiều Row
+                            _buildShiftRow(
+                              "Chiều\n(Ca 2)",
+                              2,
+                              weekData,
+                              dateFormat,
+                            ),
+                            // Tối Row
+                            _buildShiftRow(
+                              "Tối\n(Ca 3)",
+                              3,
+                              weekData,
+                              dateFormat,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -218,12 +292,21 @@ class _StudentTimetableTabState extends State<StudentTimetableTab> {
       child: Text(
         text,
         textAlign: TextAlign.center,
-        style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1E3C72), fontSize: 13),
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF1E3C72),
+          fontSize: 13,
+        ),
       ),
     );
   }
 
-  TableRow _buildShiftRow(String shiftName, int shiftIndex, Map<String, Map<int, List<dynamic>>> weekData, DateFormat dateFormat) {
+  TableRow _buildShiftRow(
+    String shiftName,
+    int shiftIndex,
+    Map<String, Map<int, List<dynamic>>> weekData,
+    DateFormat dateFormat,
+  ) {
     return TableRow(
       children: [
         // Cột tiêu đề Ca học
@@ -234,27 +317,31 @@ class _StudentTimetableTabState extends State<StudentTimetableTab> {
           child: Text(
             shiftName,
             textAlign: TextAlign.center,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black87),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+              color: Colors.black87,
+            ),
           ),
         ),
         // 7 ngày trong tuần
         ...List.generate(7, (dayIndex) {
           String dateKey = dateFormat.format(_weekDates[dayIndex]);
           List<dynamic> events = weekData[dateKey]?[shiftIndex] ?? [];
-          
+
           return Container(
             height: 150,
             alignment: Alignment.topLeft,
             padding: const EdgeInsets.all(4),
-            child: events.isEmpty 
-              ? const SizedBox.shrink()
-              : SingleChildScrollView(
-                  child: Column(
-                    children: events.map((e) => _buildEventCard(e)).toList(),
+            child: events.isEmpty
+                ? const SizedBox.shrink()
+                : SingleChildScrollView(
+                    child: Column(
+                      children: events.map((e) => _buildEventCard(e)).toList(),
+                    ),
                   ),
-                ),
           );
-        })
+        }),
       ],
     );
   }
@@ -262,7 +349,8 @@ class _StudentTimetableTabState extends State<StudentTimetableTab> {
   Widget _buildEventCard(dynamic data) {
     String timeRange = "";
     if (data['gioBatDau'] != null && data['gioKetThuc'] != null) {
-       timeRange = "${data['gioBatDau'].substring(0,5)} - ${data['gioKetThuc'].substring(0,5)}";
+      timeRange =
+          "${data['gioBatDau'].substring(0, 5)} - ${data['gioKetThuc'].substring(0, 5)}";
     }
 
     bool isExam = data['eventType'] == 'Thi';
@@ -288,14 +376,27 @@ class _StudentTimetableTabState extends State<StudentTimetableTab> {
           children: [
             Text(
               "$typeLabel ${data['tenKhoaHoc'] ?? 'N/A'}",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: titleColor),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+                color: titleColor,
+              ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 4),
-            Text("Lớp: ${data['tenLop'] ?? ''}", style: TextStyle(fontSize: 11, color: Colors.black87)),
-            Text("Giờ: $timeRange", style: TextStyle(fontSize: 11, color: Colors.black87)),
-            Text("Phòng: ${data['diaDiem'] ?? ''}", style: TextStyle(fontSize: 11, color: Colors.black87)),
+            Text(
+              "Lớp: ${data['tenLop'] ?? ''}",
+              style: const TextStyle(fontSize: 11, color: Colors.black87),
+            ),
+            Text(
+              "Giờ: $timeRange",
+              style: const TextStyle(fontSize: 11, color: Colors.black87),
+            ),
+            Text(
+              "Phòng: ${data['diaDiem'] ?? ''}",
+              style: const TextStyle(fontSize: 11, color: Colors.black87),
+            ),
           ],
         ),
       ),

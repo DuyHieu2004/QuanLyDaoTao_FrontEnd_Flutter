@@ -17,6 +17,7 @@ import 'register_instructor_screen.dart';
 import 'my_study_results_screen.dart';
 import 'instructor_schedule_screen.dart';
 import 'instructor_remuneration_screen.dart';
+import 'student_timetable_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -96,7 +97,9 @@ class _HomeScreenState extends State<HomeScreen> {
         index: _selectedIndex,
         children: [
           _buildDashboard(),
-          isTeacher ? const InstructorScheduleScreen() : const ClassListScreen(),
+          isTeacher
+              ? const InstructorScheduleScreen()
+              : const ClassListScreen(),
           const ProfileScreen(),
         ],
       ),
@@ -192,6 +195,17 @@ class _HomeScreenState extends State<HomeScreen> {
             MaterialPageRoute(builder: (_) => const MyStudyResultsScreen()),
           );
         }),
+        _buildMenuCard(
+          'Lịch học, lịch thi',
+          Icons.calendar_month,
+          Colors.deepOrange,
+          () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const StudentTimetableTab()),
+            );
+          },
+        ),
         _buildMenuCard('Chứng chỉ', Icons.workspace_premium, Colors.amber, () {
           // Hardcoding studentId: 1 for development testing (update later based on token)
           Navigator.push(
@@ -221,26 +235,23 @@ class _HomeScreenState extends State<HomeScreen> {
           () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const InstructorScheduleScreen()),
-            );
-          },
-        ),
-        _buildMenuCard(
-          'Danh sách học viên',
-          Icons.people_alt,
-          Colors.teal,
-          () {
-            Navigator.push(
-              context,
               MaterialPageRoute(
-                builder: (_) => const StudyGradingScreen(
-                  classId: 1,
-                  className: "Test Class (ID: 1)",
-                ),
+                builder: (_) => const InstructorScheduleScreen(),
               ),
             );
           },
         ),
+        _buildMenuCard('Danh sách học viên', Icons.people_alt, Colors.teal, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const StudyGradingScreen(
+                classId: 1,
+                className: "Test Class (ID: 1)",
+              ),
+            ),
+          );
+        }),
         _buildMenuCard(
           'Chi phí giảng dạy',
           Icons.payments_outlined,
@@ -248,7 +259,9 @@ class _HomeScreenState extends State<HomeScreen> {
           () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const InstructorRemunerationScreen()),
+              MaterialPageRoute(
+                builder: (_) => const InstructorRemunerationScreen(),
+              ),
             );
           },
         ),
@@ -289,6 +302,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-
 }
