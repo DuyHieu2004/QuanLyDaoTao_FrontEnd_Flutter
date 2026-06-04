@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/payment_model.dart';
 import '../services/payment_service.dart';
+import 'receipt_screen.dart';
 
 class PaymentDetailsScreen extends StatefulWidget {
   final int idDangKy;
@@ -294,7 +295,32 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                     ),
                   ),
                 ] else ...[
-                  // If Paid, maybe show a button to request refund based on your endpoints
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ReceiptScreen(payment: payment),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.receipt_long, color: Colors.white),
+                      label: const Text(
+                        "Xem & In Hóa Đơn",
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1E3C72),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
                   SizedBox(
                     width: double.infinity,
                     height: 50,

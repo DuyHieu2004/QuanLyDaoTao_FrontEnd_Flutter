@@ -12,6 +12,8 @@ class LopHoc {
   final bool allowDangKy;
   final String? trangThai;
   final String? ghiChu;
+  final bool isConflict;
+  final String? conflictMessage;
 
   LopHoc({
     required this.idLop,
@@ -25,6 +27,8 @@ class LopHoc {
     required this.allowDangKy,
     this.trangThai,
     this.ghiChu,
+    this.isConflict = false,
+    this.conflictMessage,
   });
 
   factory LopHoc.fromJson(Map<String, dynamic> json) {
@@ -40,6 +44,8 @@ class LopHoc {
       allowDangKy: json['allowDangKy'] ?? false,
       trangThai: json['trangThai'],
       ghiChu: json['ghiChu'],
+      isConflict: json['isConflict'] ?? false,
+      conflictMessage: json['conflictMessage'],
     );
   }
 }
