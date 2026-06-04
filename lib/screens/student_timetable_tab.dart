@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../services/instructor_service.dart';
+import '../services/registration_service.dart';
 
-class InstructorScheduleScreen extends StatefulWidget {
-  const InstructorScheduleScreen({super.key});
+class StudentTimetableTab extends StatefulWidget {
+  const StudentTimetableTab({super.key});
 
   @override
-  State<InstructorScheduleScreen> createState() =>
-      _InstructorScheduleScreenState();
+  State<StudentTimetableTab> createState() => _StudentTimetableTabState();
 }
 
-class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
-  final InstructorService _instructorService = InstructorService();
-  late Future<List<dynamic>> _scheduleFuture;
+class _StudentTimetableTabState extends State<StudentTimetableTab> {
+  final RegistrationService _registrationService = RegistrationService();
+  late Future<List<dynamic>> _timetableFuture;
 
   DateTime _currentDate = DateTime.now();
   List<DateTime> _weekDates = [];
@@ -21,7 +20,7 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
   void initState() {
     super.initState();
     _calculateWeekDates();
-    _scheduleFuture = _instructorService.getMyTimetable();
+    _timetableFuture = _registrationService.getMyTimetable();
   }
 
   void _calculateWeekDates() {
@@ -42,6 +41,71 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
     });
   }
 
+  void _showEventDetails(dynamic data) {
+    String timeRange = "";
+    if (data['gioBatDau'] != null && data['gioKetThuc'] != null) {
+      timeRange =
+          "${data['gioBatDau'].substring(0, 5)} - ${data['gioKetThuc'].substring(0, 5)}";
+    }
+
+    bool isExam = data['eventType'] == 'Thi';
+    Color themeColor = isExam ? Colors.orange : const Color(0xFF1565C0);
+    IconData icon = isExam ? Icons.event_available : Icons.menu_book;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Row(
+            children: [
+              Icon(icon, color: themeColor),
+              const SizedBox(width: 10),
+              Text(
+                isExam ? "Lịch Thi" : "Lịch Học",
+                style: TextStyle(
+                  color: themeColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Môn học: ${data['tenKhoaHoc'] ?? 'N/A'}",
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text("Lớp: ${data['tenLop'] ?? 'N/A'}"),
+              const SizedBox(height: 8),
+              Text("Thời gian: $timeRange"),
+              const SizedBox(height: 8),
+              Text("Địa điểm/Phòng: ${data['diaDiem'] ?? 'N/A'}"),
+              if (data['loai'] != null) ...[
+                const SizedBox(height: 8),
+                Text("Loại: ${data['loai']}"),
+              ],
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("Đóng"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat('dd/MM/yyyy');
@@ -50,7 +114,7 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text(
-          "Lịch giảng dạy",
+          "Lịch học & Lịch thi",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
         ),
       ),
@@ -73,7 +137,7 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: Color(0xFF1E3C72),
+                    color: Colors.amber,
                   ),
                 ),
                 IconButton(
@@ -87,7 +151,7 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
           const Divider(height: 1, thickness: 1),
           Expanded(
             child: FutureBuilder<List<dynamic>>(
-              future: _scheduleFuture,
+              future: _timetableFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -103,8 +167,6 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
 
                 final scheduleList = snapshot.data ?? [];
 
-                // Lọc dữ liệu cho tuần hiện tại
-                // scheduleList chứa Ngay, CaHoc, ...
                 Map<String, Map<int, List<dynamic>>> weekData = {};
                 for (var date in _weekDates) {
                   weekData[dateFormat.format(date)] = {1: [], 2: [], 3: []};
@@ -265,17 +327,17 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
         // 7 ngày trong tuần
         ...List.generate(7, (dayIndex) {
           String dateKey = dateFormat.format(_weekDates[dayIndex]);
-          List<dynamic> classes = weekData[dateKey]?[shiftIndex] ?? [];
+          List<dynamic> events = weekData[dateKey]?[shiftIndex] ?? [];
 
           return Container(
             height: 150,
             alignment: Alignment.topLeft,
             padding: const EdgeInsets.all(4),
-            child: classes.isEmpty
+            child: events.isEmpty
                 ? const SizedBox.shrink()
                 : SingleChildScrollView(
                     child: Column(
-                      children: classes.map((c) => _buildClassCard(c)).toList(),
+                      children: events.map((e) => _buildEventCard(e)).toList(),
                     ),
                   ),
           );
@@ -284,56 +346,59 @@ class _InstructorScheduleScreenState extends State<InstructorScheduleScreen> {
     );
   }
 
-  Widget _buildClassCard(dynamic data) {
+  Widget _buildEventCard(dynamic data) {
     String timeRange = "";
     if (data['gioBatDau'] != null && data['gioKetThuc'] != null) {
-      // Format time from 15:00:00 to 15:00
       timeRange =
           "${data['gioBatDau'].substring(0, 5)} - ${data['gioKetThuc'].substring(0, 5)}";
     }
 
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 6),
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: const Color(0xFFE3F2FD),
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: Colors.blue.shade200),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            data['tenKhoaHoc'] ?? 'Khoa học',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-              color: Color(0xFF1565C0),
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            "Lớp: ${data['tenLop'] ?? ''}",
-            style: const TextStyle(fontSize: 11, color: Colors.black87),
-          ),
-          Text(
-            "Giờ: $timeRange",
-            style: const TextStyle(fontSize: 11, color: Colors.black87),
-          ),
-          Text(
-            "Phòng: ${data['diaDiem'] ?? 'Đang cập nhật'}",
-            style: const TextStyle(fontSize: 11, color: Colors.black87),
-          ),
-          if (data['hoTenGv'] != null)
+    bool isExam = data['eventType'] == 'Thi';
+    Color bgColor = isExam ? const Color(0xFFFFF3E0) : const Color(0xFFE3F2FD);
+    Color borderColor = isExam ? Colors.orange.shade200 : Colors.blue.shade200;
+    Color titleColor = isExam ? Colors.deepOrange : const Color(0xFF1565C0);
+    String typeLabel = isExam ? '[THI]' : '[HỌC]';
+
+    return GestureDetector(
+      onTap: () => _showEventDetails(data),
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.only(bottom: 6),
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(color: borderColor),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
             Text(
-              "GV: ${data['hoTenGv']}",
-              style: const TextStyle(fontSize: 11, color: Colors.black54),
+              "$typeLabel ${data['tenKhoaHoc'] ?? 'N/A'}",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+                color: titleColor,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
-        ],
+            const SizedBox(height: 4),
+            Text(
+              "Lớp: ${data['tenLop'] ?? ''}",
+              style: const TextStyle(fontSize: 11, color: Colors.black87),
+            ),
+            Text(
+              "Giờ: $timeRange",
+              style: const TextStyle(fontSize: 11, color: Colors.black87),
+            ),
+            Text(
+              "Phòng: ${data['diaDiem'] ?? ''}",
+              style: const TextStyle(fontSize: 11, color: Colors.black87),
+            ),
+          ],
+        ),
       ),
     );
   }

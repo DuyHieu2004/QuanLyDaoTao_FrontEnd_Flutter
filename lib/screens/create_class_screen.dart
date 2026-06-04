@@ -82,7 +82,7 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Tạo lớp mới"),
-        backgroundColor: const Color(0xFF1E3C72),
+        
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -160,12 +160,12 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
                       child: ElevatedButton(
                         onPressed: _handleSubmit,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF1E3C72),
+                          
                         ),
                         child: const Text(
                           "TẠO LỚP",
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

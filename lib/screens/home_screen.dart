@@ -18,6 +18,7 @@ import 'my_study_results_screen.dart';
 import 'student_schedule_screen.dart';
 import 'instructor_schedule_screen.dart';
 import 'instructor_remuneration_screen.dart';
+import 'student_timetable_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -92,13 +93,14 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       body: IndexedStack(
         index: _selectedIndex,
         children: [
           _buildDashboard(),
-          const ClassListScreen(),
-          const Center(child: Text('Thông báo')),
+          isTeacher
+              ? const InstructorScheduleScreen()
+              : const ClassListScreen(),
           const ProfileScreen(),
         ],
       ),
@@ -117,10 +119,6 @@ class _HomeScreenState extends State<HomeScreen> {
             label: isTeacher ? 'Dạy học' : 'Học tập',
           ),
           const BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_none),
-            label: 'Cảnh báo',
-          ),
-          const BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
             label: 'Hồ sơ',
           ),
@@ -132,33 +130,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildDashboard() {
     return CustomScrollView(
       slivers: [
-        SliverAppBar(
-          expandedHeight: 150,
+        const SliverAppBar(
+          title: Text('Ứng dụng Đào Tạo'),
           pinned: true,
           automaticallyImplyLeading: false,
-          backgroundColor: const Color(0xFF1E3C72),
-          flexibleSpace: FlexibleSpaceBar(
-            title: Text(
-              isTeacher
-                  ? 'Bảng điều khiển giảng viên'
-                  : 'Bảng điều khiển học viên',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            background: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
-                ),
-              ),
-            ),
-          ),
-          actions: [
-            // THE DEVELOPER TOGGLE BUTTON HAS BEEN PERMANENTLY REMOVED FROM HERE
-          ],
         ),
         SliverToBoxAdapter(
           child: Padding(
@@ -166,11 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Hành động nhanh",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 // Show the correct grid based on their real role
                 isTeacher ? _buildTeacherGrid() : _buildStudentGrid(),
               ],
@@ -236,6 +207,17 @@ class _HomeScreenState extends State<HomeScreen> {
             MaterialPageRoute(builder: (_) => const MyStudyResultsScreen()),
           );
         }),
+        _buildMenuCard(
+          'Lịch học, lịch thi',
+          Icons.calendar_month,
+          Colors.deepOrange,
+          () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const StudentTimetableTab()),
+            );
+          },
+        ),
         _buildMenuCard('Chứng chỉ', Icons.workspace_premium, Colors.amber, () {
           // Hardcoding studentId: 1 for development testing (update later based on token)
           Navigator.push(
@@ -265,29 +247,21 @@ class _HomeScreenState extends State<HomeScreen> {
           () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const InstructorScheduleScreen()),
-            );
-          },
-        ),
-        _buildMenuCard(
-          'Chấm điểm (Kết quả)',
-          Icons.edit_note,
-          Colors.redAccent,
-          () {
-            Navigator.push(
-              context,
               MaterialPageRoute(
-                builder: (_) => const StudyGradingScreen(
-                  classId: 1,
-                  className: "Test Class (ID: 1)",
-                ),
+                builder: (_) => const InstructorScheduleScreen(),
               ),
             );
           },
         ),
-        _buildMenuCard('Giám thị thi', Icons.fact_check, Colors.deepPurple, () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Mô-đun giám thị thi sắp ra mắt!')),
+        _buildMenuCard('Danh sách học viên', Icons.people_alt, Colors.teal, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const StudyGradingScreen(
+                classId: 1,
+                className: "Test Class (ID: 1)",
+              ),
+            ),
           );
         }),
         _buildMenuCard(
@@ -297,17 +271,12 @@ class _HomeScreenState extends State<HomeScreen> {
           () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const InstructorRemunerationScreen()),
+              MaterialPageRoute(
+                builder: (_) => const InstructorRemunerationScreen(),
+              ),
             );
           },
         ),
-        _buildMenuCard('Thống kê học viên', Icons.analytics, Colors.blue, () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Mô-đun thống kê học viên sắp ra mắt!'),
-            ),
-          );
-        }),
       ],
     );
   }
@@ -345,6 +314,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-
 }

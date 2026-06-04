@@ -117,9 +117,9 @@ class _RoomManagementScreenState extends State<RoomManagementScreen> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1E3C72),
+                
               ),
-              child: const Text('Lưu', style: TextStyle(color: Colors.white)),
+              child: const Text('Lưu', style: TextStyle(color: Colors.black)),
             ),
           ],
         );
@@ -175,14 +175,14 @@ class _RoomManagementScreenState extends State<RoomManagementScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text(
           "Quản lý phòng",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: const Color(0xFF1E3C72),
-        iconTheme: const IconThemeData(color: Colors.white),
+        
+        
       ),
       body: RefreshIndicator(
         onRefresh: () async => _loadRooms(),
@@ -252,7 +252,7 @@ class _RoomManagementScreenState extends State<RoomManagementScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF1E3C72),
+        
         onPressed: () =>
             _showRoomDialog(), // Passing null means we are creating a new room
         child: const Icon(Icons.add, color: Colors.white),

@@ -107,9 +107,9 @@ class _GradingScreenState extends State<GradingScreen> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1E3C72),
+                
               ),
-              child: const Text('Lưu', style: TextStyle(color: Colors.white)),
+              child: const Text('Lưu', style: TextStyle(color: Colors.black)),
             ),
           ],
         );
@@ -120,14 +120,14 @@ class _GradingScreenState extends State<GradingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text(
           "Chấm thi",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: const Color(0xFF1E3C72),
-        iconTheme: const IconThemeData(color: Colors.white),
+        
+        
       ),
       body: RefreshIndicator(
         onRefresh: () async => _loadResults(),
@@ -164,7 +164,7 @@ class _GradingScreenState extends State<GradingScreen> {
                       vertical: 8,
                     ),
                     leading: CircleAvatar(
-                      backgroundColor: const Color(0xFF1E3C72).withOpacity(0.1),
+                      backgroundColor: Colors.amber.withOpacity(0.1),
                       child: const Icon(Icons.person, color: Color(0xFF1E3C72)),
                     ),
                     title: Text(

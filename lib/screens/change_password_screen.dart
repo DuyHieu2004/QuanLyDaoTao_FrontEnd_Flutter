@@ -95,7 +95,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E3C72),
+        
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
@@ -103,7 +103,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         ),
         title: const Text(
           'Đổi mật khẩu',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -133,7 +133,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 const SizedBox(height: 10),
                 const Text(
                   'Bảo mật tài khoản của bạn',
-                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                  style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
                 const SizedBox(height: 30),
 
@@ -201,7 +201,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         child: ElevatedButton(
                           onPressed: _isLoading ? null : _handleChangePassword,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF1E3C72),
+                            
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -216,7 +216,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                    color: Colors.black,
                                   ),
                                 ),
                         ),

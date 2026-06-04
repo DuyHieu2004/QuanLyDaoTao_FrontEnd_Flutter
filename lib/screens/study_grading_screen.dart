@@ -37,123 +37,19 @@ class _StudyGradingScreenState extends State<StudyGradingScreen> {
     });
   }
 
-  void _showGradingDialog(StudyResult result) {
-    final attController = TextEditingController(
-      text: result.diemChuyenCan > 0 ? result.diemChuyenCan.toString() : '',
-    );
-    final examController = TextEditingController(
-      text: result.diemThi > 0 ? result.diemThi.toString() : '',
-    );
 
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Đánh giá: ${result.hocVienName ?? "Học viên"}'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: attController,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                decoration: const InputDecoration(
-                  labelText: 'Điểm chuyên cần',
-                  prefixIcon: Icon(Icons.co_present),
-                ),
-              ),
-              const SizedBox(height: 15),
-              TextField(
-                controller: examController,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                decoration: const InputDecoration(
-                  labelText: 'Điểm thi',
-                  prefixIcon: Icon(Icons.quiz),
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Hủy'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final double? attScore = double.tryParse(
-                  attController.text.trim(),
-                );
-                final double? examScore = double.tryParse(
-                  examController.text.trim(),
-                );
-
-                if (attScore == null ||
-                    examScore == null ||
-                    attScore < 0 ||
-                    examScore < 0) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        'Vui lòng nhập số hợp lệ lớn hơn hoặc bằng 0.',
-                      ),
-                    ),
-                  );
-                  return;
-                }
-
-                Navigator.pop(context); // Close dialog
-
-                bool success = await _service.updateResult(
-                  result.idKetQua,
-                  attScore,
-                  examScore,
-                );
-
-                if (success) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Cập nhật điểm thành công!'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                  _loadData(); // Refresh the list and stats!
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Cập nhật thất bại.'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1E3C72),
-              ),
-              child: const Text(
-                'L\u01b0u',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(
           widget.className,
-          style: const TextStyle(color: Colors.white, fontSize: 18),
+          style: const TextStyle(color: Colors.black, fontSize: 18),
         ),
-        backgroundColor: const Color(0xFF1E3C72),
-        iconTheme: const IconThemeData(color: Colors.white),
+        
+        
         actions: [
           IconButton(icon: const Icon(Icons.refresh), onPressed: _loadData),
         ],
@@ -188,7 +84,7 @@ class _StudyGradingScreenState extends State<StudyGradingScreen> {
                     const Text(
                       "Hiệu suất lớp",
                       style: TextStyle(
-                        color: Colors.white70,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -245,7 +141,6 @@ class _StudyGradingScreenState extends State<StudyGradingScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: ListTile(
-                        onTap: () => _showGradingDialog(res),
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16,
                           vertical: 8,
@@ -305,7 +200,7 @@ class _StudyGradingScreenState extends State<StudyGradingScreen> {
         Text(
           value,
           style: const TextStyle(
-            color: Colors.white,
+            color: Colors.black,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
@@ -313,7 +208,7 @@ class _StudyGradingScreenState extends State<StudyGradingScreen> {
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(color: Colors.white70, fontSize: 12),
+          style: const TextStyle(color: Colors.white, fontSize: 12),
         ),
       ],
     );

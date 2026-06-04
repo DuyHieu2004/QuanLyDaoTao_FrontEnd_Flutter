@@ -33,14 +33,14 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(
           widget.courseName,
-          style: const TextStyle(color: Colors.white, fontSize: 16),
+          style: const TextStyle(color: Colors.black, fontSize: 16),
         ),
-        backgroundColor: const Color(0xFF1E3C72),
-        iconTheme: const IconThemeData(color: Colors.white),
+        
+        
       ),
       body: FutureBuilder<KhoaHoc?>(
         future: _courseDetailsFuture,
@@ -202,12 +202,12 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                                         }
                                       : null,
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF1E3C72),
+                                    
                                     disabledBackgroundColor: Colors.grey[300],
                                   ),
                                   child: const Text(
                                     "Đăng ký",
-                                    style: TextStyle(color: Colors.white),
+                                    style: TextStyle(color: Colors.black),
                                   ),
                                 ),
                               ),
