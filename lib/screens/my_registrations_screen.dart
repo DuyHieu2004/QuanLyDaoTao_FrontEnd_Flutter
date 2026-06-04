@@ -294,6 +294,33 @@ class _MyRegistrationsScreenState extends State<MyRegistrationsScreen> {
                   ),
                 ),
               ),
+            ] else ...[
+              const SizedBox(height: 15),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () async {
+                    if (idDangKy <= 0) return;
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => PaymentDetailsScreen(idDangKy: idDangKy),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.receipt_long, color: Colors.white),
+                  label: const Text(
+                    "XEM CHI TIẾT & HÓA ĐƠN",
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1E3C72),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ],
         ),

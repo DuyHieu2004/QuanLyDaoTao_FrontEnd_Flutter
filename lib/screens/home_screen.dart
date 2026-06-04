@@ -15,6 +15,7 @@ import 'study_grading_screen.dart';
 import 'my_registrations_screen.dart';
 import 'register_instructor_screen.dart';
 import 'my_study_results_screen.dart';
+import 'student_schedule_screen.dart';
 import 'instructor_schedule_screen.dart';
 import 'instructor_remuneration_screen.dart';
 
@@ -215,6 +216,17 @@ class _HomeScreenState extends State<HomeScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const MyRegistrationsScreen()),
+            );
+          },
+        ),
+        _buildMenuCard(
+          'Thời khóa biểu',
+          Icons.calendar_month,
+          Colors.purple,
+          () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const StudentScheduleScreen()),
             );
           },
         ),

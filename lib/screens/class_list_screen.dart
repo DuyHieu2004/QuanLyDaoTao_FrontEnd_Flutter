@@ -22,6 +22,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
   int? currentStudentId;
   bool isLoadingId = true; // Biến cờ để chờ load ID xong mới vẽ giao diện
   String _searchQuery = '';
+  bool _hideOverlappingClasses = false;
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -110,15 +111,40 @@ class _ClassListScreenState extends State<ClassListScreen> {
                   return _buildEmptyState();
                 }
 
-                // Lọc danh sách theo từ khóa tìm kiếm
+                // Lọc danh sách theo từ khóa tìm kiếm và trùng lịch
                 final filteredClasses = state.classes.where((lop) {
                   final className = lop.tenLop.toLowerCase();
                   final searchLower = _searchQuery.toLowerCase();
-                  return className.contains(searchLower);
+                  final matchSearch = className.contains(searchLower);
+                  final matchConflict = !_hideOverlappingClasses || !lop.isConflict;
+                  return matchSearch && matchConflict;
                 }).toList();
 
                 return Column(
                   children: [
+                    // Bộ lọc trùng lịch
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: _hideOverlappingClasses,
+                            onChanged: (value) {
+                              setState(() {
+                                _hideOverlappingClasses = value ?? false;
+                              });
+                            },
+                            activeColor: const Color(0xFF1E3C72),
+                          ),
+                          const Expanded(
+                            child: Text(
+                              "Không hiển thị lớp bị trùng lịch", 
+                              style: TextStyle(fontWeight: FontWeight.bold)
+                            )
+                          ),
+                        ],
+                      ),
+                    ),
                     // Thanh tìm kiếm
                     Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -213,7 +239,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
                     ),
                   ),
                 ),
-                _buildStatusBadge(isOpen),
+                _buildStatusBadge(lop),
               ],
             ),
           ),
@@ -240,6 +266,15 @@ class _ClassListScreenState extends State<ClassListScreen> {
                   "Còn ${lop.soChoConLai} chỗ",
                   valueColor: lop.soChoConLai < 5 ? Colors.red : Colors.blue,
                 ),
+                if (lop.isConflict && lop.conflictMessage != null) ...[
+                  const SizedBox(height: 12),
+                  _buildDetailRow(
+                    Icons.warning_amber_rounded,
+                    "Cảnh báo",
+                    lop.conflictMessage!,
+                    valueColor: Colors.orange[800],
+                  ),
+                ],
               ],
             ),
           ),
@@ -279,17 +314,39 @@ class _ClassListScreenState extends State<ClassListScreen> {
     );
   }
 
-  Widget _buildStatusBadge(bool isOpen) {
+  Widget _buildStatusBadge(LopHoc lop) {
+    bool isConflict = lop.isConflict;
+    bool isFull = lop.soChoConLai <= 0;
+    bool isOpen = lop.allowDangKy && !isFull && !isConflict;
+
+    Color bgColor = Colors.green.withOpacity(0.1);
+    Color textColor = Colors.green[700]!;
+    String text = "MỞ";
+
+    if (isConflict) {
+      bgColor = Colors.orange.withOpacity(0.1);
+      textColor = Colors.orange[800]!;
+      text = "TRÙNG LỊCH";
+    } else if (!lop.allowDangKy) {
+      bgColor = Colors.red.withOpacity(0.1);
+      textColor = Colors.red[700]!;
+      text = "ĐÓNG";
+    } else if (isFull) {
+      bgColor = Colors.red.withOpacity(0.1);
+      textColor = Colors.red[700]!;
+      text = "ĐÃ ĐẦY";
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: isOpen ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1),
+        color: bgColor,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
-        isOpen ? "MỞ" : "ĐÓNG",
+        text,
         style: TextStyle(
-          color: isOpen ? Colors.green[700] : Colors.red[700],
+          color: textColor,
           fontSize: 11,
           fontWeight: FontWeight.bold,
         ),
