@@ -114,7 +114,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
+            colors: [Color(0xFFC89B53), Color(0xFFDDA15E)],
           ),
         ),
         child: SafeArea(
@@ -259,7 +259,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF1E3C72), width: 2),
+          borderSide: const BorderSide(color: Color(0xFFC89B53), width: 2),
         ),
       ),
     );

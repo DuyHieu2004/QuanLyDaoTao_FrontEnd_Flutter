@@ -77,7 +77,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF1E3C72),
+                          color: Color(0xFFC89B53),
                         ),
                       ),
                       const SizedBox(height: 10),

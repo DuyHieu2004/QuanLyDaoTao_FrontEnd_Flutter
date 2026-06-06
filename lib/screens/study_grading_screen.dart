@@ -69,7 +69,7 @@ class _StudyGradingScreenState extends State<StudyGradingScreen> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
+                    colors: [Color(0xFFC89B53), Color(0xFFDDA15E)],
                   ),
                   borderRadius: BorderRadius.circular(15),
                   boxShadow: [
@@ -177,7 +177,7 @@ class _StudyGradingScreenState extends State<StudyGradingScreen> {
                             res.diemTrungBinh.toStringAsFixed(1),
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF1E3C72),
+                              color: Color(0xFFC89B53),
                               fontSize: 16,
                             ),
                           ),

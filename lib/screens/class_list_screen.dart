@@ -134,7 +134,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
                                 _hideOverlappingClasses = value ?? false;
                               });
                             },
-                            activeColor: const Color(0xFF1E3C72),
+                            activeColor: const Color(0xFFC89B53),
                           ),
                           const Expanded(
                             child: Text(
@@ -157,7 +157,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
                         },
                         decoration: InputDecoration(
                           hintText: "Tìm kiếm tên lớp...",
-                          prefixIcon: const Icon(Icons.search, color: Color(0xFF1E3C72)),
+                          prefixIcon: const Icon(Icons.search, color: Color(0xFFC89B53)),
                           filled: true,
                           fillColor: Colors.white,
                           contentPadding: const EdgeInsets.symmetric(vertical: 0),
@@ -235,7 +235,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF1E3C72),
+                      color: Color(0xFFC89B53),
                     ),
                   ),
                 ),

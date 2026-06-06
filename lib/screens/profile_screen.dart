@@ -146,7 +146,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: const CircleAvatar(
               radius: 50,
               backgroundColor: Colors.transparent,
-              child: Icon(Icons.person, size: 50, color: Color(0xFF1E3C72)),
+              child: Icon(Icons.person, size: 50, color: Color(0xFFC89B53)),
             ),
           ),
           const SizedBox(height: 15),
@@ -211,7 +211,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1E3C72),
+                  color: Color(0xFFC89B53),
                 ),
               ),
               const Divider(height: 24),

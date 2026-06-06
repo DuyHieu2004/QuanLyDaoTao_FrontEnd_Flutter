@@ -66,7 +66,7 @@ class _InstructorRemunerationScreenState extends State<InstructorRemunerationScr
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
+                        colors: [Color(0xFFC89B53), Color(0xFFDDA15E)],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),

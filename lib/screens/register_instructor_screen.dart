@@ -110,7 +110,7 @@ class _RegisterInstructorScreenState extends State<RegisterInstructorScreen> {
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF1E3C72),
+                        color: Color(0xFFC89B53),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -210,7 +210,7 @@ class _RegisterInstructorScreenState extends State<RegisterInstructorScreen> {
       keyboardType: keyboardType,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, color: const Color(0xFF1E3C72)),
+        prefixIcon: Icon(icon, color: const Color(0xFFC89B53)),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -220,7 +220,7 @@ class _RegisterInstructorScreenState extends State<RegisterInstructorScreen> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFF1E3C72), width: 2),
+          borderSide: const BorderSide(color: Color(0xFFC89B53), width: 2),
         ),
       ),
       validator: validator,

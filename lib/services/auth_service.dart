@@ -214,6 +214,32 @@ class AuthService {
     }
   }
 
+  // --- QUÊN MẬT KHẨU ---
+  Future<Map<String, dynamic>> forgotPassword(String usernameOrEmail) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${ApiConstants.baseUrl}/api/auth/forgot-password'),
+        headers: {
+          'Content-Type': 'application/json',
+          'accept': '*/*',
+        },
+        body: jsonEncode({
+          "usernameOrEmail": usernameOrEmail,
+        }),
+      );
+
+      final decoded = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return {'success': true, 'message': decoded['message'] ?? 'Đặt lại mật khẩu thành công'};
+      } else {
+        return {'success': false, 'message': decoded['message'] ?? 'Có lỗi xảy ra'};
+      }
+    } catch (e) {
+      print("Lỗi quên mật khẩu: $e");
+      return {'success': false, 'message': 'Không thể kết nối đến máy chủ'};
+    }
+  }
+
   // --- LOGOUT ---
   Future<bool> logout() async {
     try {

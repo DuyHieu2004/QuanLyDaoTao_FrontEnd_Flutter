@@ -294,7 +294,7 @@ class _StudentTimetableTabState extends State<StudentTimetableTab> {
         textAlign: TextAlign.center,
         style: const TextStyle(
           fontWeight: FontWeight.bold,
-          color: Color(0xFF1E3C72),
+          color: Color(0xFFC89B53),
           fontSize: 13,
         ),
       ),
