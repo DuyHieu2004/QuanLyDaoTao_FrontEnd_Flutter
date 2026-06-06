@@ -217,7 +217,7 @@ class _RoomManagementScreenState extends State<RoomManagementScreen> {
                       ),
                       child: const Icon(
                         Icons.meeting_room,
-                        color: Color(0xFF1E3C72),
+                        color: Color(0xFFC89B53),
                       ),
                     ),
                     title: Text(

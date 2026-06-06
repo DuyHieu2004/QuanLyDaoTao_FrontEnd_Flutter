@@ -33,7 +33,7 @@ class _MyStudyResultsScreenState extends State<MyStudyResultsScreen> {
           "Kết quả học tập",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
-        backgroundColor: const Color(0xFF1E3C72),
+        backgroundColor: const Color(0xFFC89B53),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: _buildStudyResultsTab(),
@@ -77,7 +77,7 @@ class _MyStudyResultsScreenState extends State<MyStudyResultsScreen> {
                   children: [
                     Text(
                       className,
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1E3C72)),
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFC89B53)),
                     ),
                     Text(courseName, style: TextStyle(color: Colors.grey.shade700)),
                     const Divider(height: 20),

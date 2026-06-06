@@ -114,7 +114,7 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.5,
-                    color: Color(0xFF1E3C72),
+                    color: Color(0xFFC89B53),
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -150,7 +150,7 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF1E3C72),
+                    color: Color(0xFFC89B53),
                   ),
                   textAlign: TextAlign.center,
                 ),

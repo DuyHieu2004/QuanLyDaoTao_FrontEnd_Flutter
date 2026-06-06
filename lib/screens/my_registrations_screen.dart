@@ -121,7 +121,7 @@ class _MyRegistrationsScreenState extends State<MyRegistrationsScreen> {
                         },
                         decoration: InputDecoration(
                           hintText: "Tìm kiếm lớp học, khóa học...",
-                          prefixIcon: const Icon(Icons.search, color: Color(0xFF1E3C72)),
+                          prefixIcon: const Icon(Icons.search, color: Color(0xFFC89B53)),
                           filled: true,
                           fillColor: Colors.white,
                           contentPadding: const EdgeInsets.symmetric(vertical: 0),
@@ -224,7 +224,7 @@ class _MyRegistrationsScreenState extends State<MyRegistrationsScreen> {
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1E3C72),
+                color: Color(0xFFC89B53),
               ),
             ),
             const SizedBox(height: 5),
@@ -314,7 +314,7 @@ class _MyRegistrationsScreenState extends State<MyRegistrationsScreen> {
                     style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF1E3C72),
+                    backgroundColor: const Color(0xFFC89B53),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

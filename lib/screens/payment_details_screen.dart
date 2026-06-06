@@ -209,7 +209,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                             style: const TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF1E3C72),
+                              color: Color(0xFFC89B53),
                             ),
                           ),
                         ],
@@ -313,7 +313,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1E3C72),
+                        backgroundColor: const Color(0xFFC89B53),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),

@@ -165,7 +165,7 @@ class _GradingScreenState extends State<GradingScreen> {
                     ),
                     leading: CircleAvatar(
                       backgroundColor: Colors.amber.withOpacity(0.1),
-                      child: const Icon(Icons.person, color: Color(0xFF1E3C72)),
+                      child: const Icon(Icons.person, color: Color(0xFFC89B53)),
                     ),
                     title: Text(
                       res.hoTenHocVien ?? "Học viên không rõ",
@@ -190,7 +190,7 @@ class _GradingScreenState extends State<GradingScreen> {
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: hasScore
-                                ? const Color(0xFF1E3C72)
+                                ? const Color(0xFFC89B53)
                                 : Colors.grey,
                           ),
                         ),

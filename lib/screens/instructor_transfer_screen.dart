@@ -189,7 +189,7 @@ class _InstructorTransferScreenState extends State<InstructorTransferScreen> {
                           children: [
                             const Icon(
                               Icons.swap_horiz,
-                              color: Color(0xFF1E3C72),
+                              color: Color(0xFFC89B53),
                             ),
                             const SizedBox(width: 8),
                             Text(

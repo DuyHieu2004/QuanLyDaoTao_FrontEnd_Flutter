@@ -15,7 +15,7 @@ import 'study_grading_screen.dart';
 import 'my_registrations_screen.dart';
 import 'register_instructor_screen.dart';
 import 'my_study_results_screen.dart';
-import 'student_schedule_screen.dart';
+import 'my_study_results_screen.dart';
 import 'instructor_schedule_screen.dart';
 import 'instructor_remuneration_screen.dart';
 import 'student_timetable_tab.dart';
@@ -108,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
         currentIndex: _selectedIndex,
         onTap: (index) => setState(() => _selectedIndex = index),
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: const Color(0xFF1E3C72),
+        selectedItemColor: const Color(0xFFC89B53),
         items: [
           const BottomNavigationBarItem(
             icon: Icon(Icons.home_filled),
@@ -131,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return CustomScrollView(
       slivers: [
         const SliverAppBar(
-          title: Text('Ứng dụng Đào Tạo'),
+          title: Text('Trung Tâm Tin Học PyTech'),
           pinned: true,
           automaticallyImplyLeading: false,
         ),
@@ -161,12 +161,6 @@ class _HomeScreenState extends State<HomeScreen> {
       mainAxisSpacing: 15,
       crossAxisSpacing: 15,
       children: [
-        _buildMenuCard('Danh mục khóa học', Icons.search, Colors.blue, () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const CourseListScreen()),
-          );
-        }),
         _buildMenuCard('Lớp học có sẵn', Icons.class_, Colors.indigo, () {
           Navigator.push(
             context,
@@ -193,11 +187,11 @@ class _HomeScreenState extends State<HomeScreen> {
         _buildMenuCard(
           'Thời khóa biểu',
           Icons.calendar_month,
-          Colors.purple,
+          Colors.deepOrange,
           () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const StudentScheduleScreen()),
+              MaterialPageRoute(builder: (_) => const StudentTimetableTab()),
             );
           },
         ),
@@ -207,17 +201,6 @@ class _HomeScreenState extends State<HomeScreen> {
             MaterialPageRoute(builder: (_) => const MyStudyResultsScreen()),
           );
         }),
-        _buildMenuCard(
-          'Lịch học, lịch thi',
-          Icons.calendar_month,
-          Colors.deepOrange,
-          () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const StudentTimetableTab()),
-            );
-          },
-        ),
         _buildMenuCard('Chứng chỉ', Icons.workspace_premium, Colors.amber, () {
           // Hardcoding studentId: 1 for development testing (update later based on token)
           Navigator.push(

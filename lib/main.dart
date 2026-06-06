@@ -18,12 +18,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'App Đăng Nhập',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: const Color(0xFFC89B53),
         scaffoldBackgroundColor: Colors.transparent,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.amber,
-          iconTheme: IconThemeData(color: Colors.black),
-          titleTextStyle: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.transparent,
+          iconTheme: const IconThemeData(color: Color(0xFFC89B53)),
+          titleTextStyle: const TextStyle(color: Color(0xFFC89B53), fontSize: 18, fontWeight: FontWeight.bold),
           elevation: 0,
         ),
       ),

@@ -5,6 +5,7 @@ import '../main.dart';
 import '../services/auth_service.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
+import 'forgot_password_screen.dart';
 // Make sure to import your RegisterScreen and HomeScreen once you create them
 // import 'register_screen.dart';
 // import 'home_screen.dart';
@@ -86,7 +87,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 20),
                   const Text(
-                    'Hệ Thống Đào Tạo',
+                    'Trung Tâm Tin Học PyTech',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -171,11 +173,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           alignment: Alignment.centerRight,
                           child: TextButton(
                             onPressed: () {
-                              // Handle forgot password logic here
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
+                              );
                             },
                             child: const Text(
                               'Quên mật khẩu?',
-                              style: TextStyle(color: Color(0xFF1E3C72)),
+                              style: TextStyle(color: Color(0xFFC89B53), fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
@@ -188,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: ElevatedButton(
                             onPressed: _isLoading ? null : _handleLogin,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF1E3C72),
+                              backgroundColor: const Color(0xFFC89B53),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),

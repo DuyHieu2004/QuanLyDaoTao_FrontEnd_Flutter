@@ -141,7 +141,7 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
                         "Học viên có thể đăng ký lớp này ngay bây giờ không?",
                       ),
                       value: _allowRegistration,
-                      activeColor: const Color(0xFF1E3C72),
+                      activeColor: const Color(0xFFC89B53),
                       onChanged: (val) =>
                           setState(() => _allowRegistration = val),
                     ),

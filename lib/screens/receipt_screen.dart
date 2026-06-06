@@ -15,7 +15,7 @@ class ReceiptScreen extends StatelessWidget {
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
         title: const Text('Hóa đơn thanh toán', style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color(0xFF1E3C72),
+        backgroundColor: const Color(0xFFC89B53),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Center(
@@ -55,7 +55,7 @@ class ReceiptScreen extends StatelessWidget {
                       Text('SỐ TIỀN THANH TOÁN', style: TextStyle(color: Colors.grey[600], fontSize: 12)),
                       Text(
                         formatCurrency.format(payment.soTien),
-                        style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF1E3C72)),
+                        style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFFC89B53)),
                       ),
                     ],
                   ),

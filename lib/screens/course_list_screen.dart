@@ -78,7 +78,7 @@ class _CourseListScreenState extends State<CourseListScreen> {
                       ),
                       child: const Icon(
                         Icons.school,
-                        color: Color(0xFF1E3C72),
+                        color: Color(0xFFC89B53),
                         size: 30,
                       ),
                     ),
