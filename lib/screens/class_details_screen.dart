@@ -160,7 +160,7 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                             _buildInfoRow(
                               Icons.calendar_today,
                               "Lịch học",
-                              "${dateFormat.format(lop.ngayBatDau)} - ${dateFormat.format(lop.ngayKetThuc)}",
+                              "${lop.ngayBatDau != null ? dateFormat.format(lop.ngayBatDau!) : '??'} - ${lop.ngayKetThuc != null ? dateFormat.format(lop.ngayKetThuc!) : '??'}",
                             ),
                             const Divider(height: 30),
                             _buildInfoRow(
