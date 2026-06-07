@@ -182,7 +182,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                                   children: [
                                     const SizedBox(height: 5),
                                     Text(
-                                      "Lịch học: ${dateFormat.format(lop.ngayBatDau)} - ${dateFormat.format(lop.ngayKetThuc)}",
+                                      "Lịch học: ${lop.ngayBatDau != null ? dateFormat.format(lop.ngayBatDau!) : '??'} - ${lop.ngayKetThuc != null ? dateFormat.format(lop.ngayKetThuc!) : '??'}",
                                     ),
                                     const SizedBox(height: 5),
                                     Text(

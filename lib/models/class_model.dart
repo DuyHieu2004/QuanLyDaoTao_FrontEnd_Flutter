@@ -4,8 +4,8 @@ class LopHoc {
   final int idLop;
   final String tenLop;
   final int idKhoaHoc;
-  final DateTime ngayBatDau;
-  final DateTime ngayKetThuc;
+  final DateTime? ngayBatDau;
+  final DateTime? ngayKetThuc;
   final int siSoToiDa;
   final int soHocVienDangKy;
   final int soChoConLai;
@@ -19,8 +19,8 @@ class LopHoc {
     required this.idLop,
     required this.tenLop,
     required this.idKhoaHoc,
-    required this.ngayBatDau,
-    required this.ngayKetThuc,
+    this.ngayBatDau,
+    this.ngayKetThuc,
     required this.siSoToiDa,
     required this.soHocVienDangKy,
     required this.soChoConLai,
@@ -36,8 +36,8 @@ class LopHoc {
       idLop: json['idLop'] ?? 0,
       tenLop: json['tenLop'] ?? '',
       idKhoaHoc: json['idKhoaHoc'] ?? 0,
-      ngayBatDau: DateTime.parse(json['ngayBatDau']),
-      ngayKetThuc: DateTime.parse(json['ngayKetThuc']),
+      ngayBatDau: json['ngayBatDau'] != null ? DateTime.parse(json['ngayBatDau']) : null,
+      ngayKetThuc: json['ngayKetThuc'] != null ? DateTime.parse(json['ngayKetThuc']) : null,
       siSoToiDa: json['siSoToiDa'] ?? 0,
       soHocVienDangKy: json['soHocVienDangKy'] ?? 0,
       soChoConLai: json['soChoConLai'] ?? 0,

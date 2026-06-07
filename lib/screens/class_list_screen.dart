@@ -251,7 +251,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
                 _buildDetailRow(
                   Icons.calendar_month_outlined,
                   "Lịch học",
-                  "${dateFormat.format(lop.ngayBatDau)} - ${dateFormat.format(lop.ngayKetThuc)}",
+                  "${lop.ngayBatDau != null ? dateFormat.format(lop.ngayBatDau!) : '??'} - ${lop.ngayKetThuc != null ? dateFormat.format(lop.ngayKetThuc!) : '??'}",
                 ),
                 const SizedBox(height: 12),
                 _buildDetailRow(
@@ -356,15 +356,18 @@ class _ClassListScreenState extends State<ClassListScreen> {
 
   Widget _buildDetailRow(IconData icon, String label, String value, {Color? valueColor}) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(icon, size: 20, color: Colors.grey[600]),
         const SizedBox(width: 10),
         Text("$label: ", style: TextStyle(color: Colors.grey[600])),
-        Text(
-          value,
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            color: valueColor ?? Colors.black87,
+        Expanded(
+          child: Text(
+            value,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: valueColor ?? Colors.black87,
+            ),
           ),
         ),
       ],
